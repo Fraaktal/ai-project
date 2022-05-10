@@ -13,7 +13,7 @@ public interface IChallenger {
         /**
          * L’ arbitre vous demande le nom de votre équipe.
          *
-         * @return le nom de votre équipe sous la forme "Nom1 − Nom2"
+         * @return le nom de votre équipe sous la forme "Nom1 − Nom2 - Nom3"
          */
         String teamName();
 
@@ -41,7 +41,7 @@ public interface IChallenger {
          */
         void otherPlay(String move);
 
-        //La fonction bestMove n’est à implémenter que pour la partie 3 du devoir .
+        // La fonction bestMove n’est à implémenter que pour la partie 3 du devoir .
         // Pour la partie 2 , vous pouvez la laisser sous la forme :
         // public String bestMove( ) {
         // return null;
