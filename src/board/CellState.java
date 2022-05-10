@@ -1,6 +1,6 @@
 package game;
 
-public enum GameState {
+public enum CellState {
     OUT_OF_BOARD,
     RED,
     BLACK,

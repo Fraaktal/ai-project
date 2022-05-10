@@ -5,12 +5,12 @@ import java.util.Set;
 public class Challenger implements IChallenger{
 
     public Challenger(){
-        gameBoard = new GameBoard();
+        gameBoard = new Iceboard();
         bestMoveSimulator = new BestMoveSimulator();
     }
 
     private BestMoveSimulator bestMoveSimulator;
-    private GameBoard gameBoard;
+    private Iceboard gameBoard;
     private IcebergRole role;
 
     @Override
@@ -25,12 +25,12 @@ public class Challenger implements IChallenger{
 
     @Override
     public void iPlay(String move) {
-        GameBoard.playMove(move);
+        Iceboard.playMove(move);
     }
 
     @Override
     public void otherPlay(String move) {
-        GameBoard.playMove(move);
+        Iceboard.playMove(move);
     }
 
     @Override
