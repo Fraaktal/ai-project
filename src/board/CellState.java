@@ -1,4 +1,4 @@
-package game;
+package board;
 
 public enum CellState {
     OUT_OF_BOARD,

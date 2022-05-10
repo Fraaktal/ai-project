@@ -1,5 +1,7 @@
 package game;
 
+import board.Iceboard;
+
 import java.util.Set;
 
 public class Challenger implements IChallenger{
