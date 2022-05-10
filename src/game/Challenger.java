@@ -3,6 +3,14 @@ package game;
 import java.util.Set;
 
 public class Challenger implements IChallenger{
+
+    public Challenger(){
+        gameBoard = new GameBoard();
+        bestMoveSimulator = new BestMoveSimulator();
+    }
+
+    private BestMoveSimulator bestMoveSimulator;
+    private GameBoard gameBoard;
     private IcebergRole role;
 
     @Override
@@ -17,27 +25,27 @@ public class Challenger implements IChallenger{
 
     @Override
     public void iPlay(String move) {
-
+        GameBoard.playMove(move);
     }
 
     @Override
     public void otherPlay(String move) {
-
+        GameBoard.playMove(move);
     }
 
     @Override
     public String bestMove() {
-        return null;
+        return bestMoveSimulator.getBestMove(gameBoard, role);
     }
 
     @Override
     public String victory() {
-        return null;
+        return "fanfare_theme_final_fantasy.mp3";
     }
 
     @Override
     public String defeat() {
-        return null;
+        return "Call an ambulance, for me... :'(";
     }
 
     @Override
@@ -47,16 +55,16 @@ public class Challenger implements IChallenger{
 
     @Override
     public String boardToString() {
-        return null;
+        return gameBoard.toString();
     }
 
     @Override
     public void setBoardFromFile(String fileName) {
-
+        gameBoard.load(fileName);
     }
 
     @Override
     public Set<String> possibleMoves(String role) {
-        return null;
+        return gameBoard.getPossibleMoves(role);
     }
 }
