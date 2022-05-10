@@ -26,7 +26,7 @@ public interface IChallenger {
         void setRole(String role);
 
         /**
-         * L’arbitre vous signale qu’il  valide le dernier coup que vous lui avez communiqué.
+         * L’arbitre vous signale qu’il valide le dernier coup que vous lui avez communiqué.
          * Vous pouvez jouer ce coup dans votre représentation interne du plateau à ce moment.
          *
          * @param move le coup que vous venez de jouer, sous la forme "D2−C2"
@@ -34,7 +34,7 @@ public interface IChallenger {
         void iPlay(String move);
 
         /**
-         * L’arbitre vous signale qu’il valide le dernier coup que l’adversaire lui avez communiqué .
+         * L’arbitre vous signale qu’il valide le dernier coup que l’adversaire lui a communiqué.
          * Vous pouvez jouer ce coup dans votre représentation interne du plateau à ce moment.
          *
          * @param move le coup que l’adversaire viens de jouer, sous la forme "D2−C2"
@@ -51,7 +51,7 @@ public interface IChallenger {
          * L'arbitre vous demande le coup que vous souhaitez jouer.
          * Choisissez bien.
          *
-         * @return le coup que vous comptez jouer (et que vous soumettez à la validation de l'arbitre) , sous la
+         * @return le coup que vous comptez jouer (et que vous soumettez à la validation de l'arbitre), sous la
          * forme "D2−C2"
          */
         String bestMove();
@@ -75,7 +75,7 @@ public interface IChallenger {
          * @return un petit message ou une bannière de partie nulle.
          */
         String tie();
-// −−−−−−−−−−−−−−−−−−−−−− F o n c t i o n s pour l e s t e s t s −−−−−−−−−−−−−−−−−−−−−
+// −−−−−−−−−−−−−−−−−−−−−− Fonctions pour les tests −−−−−−−−−−−−−−−−−−−−−
 
         /**
          * Vous devez renvoyer une chaîne de caractères décrivant l’état du plateau.
