@@ -50,7 +50,7 @@ public class Challenger implements IChallenger{
 
     @Override
     public String tie() {
-        return null;
+        return "We both suck bro";
     }
 
     @Override
