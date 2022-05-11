@@ -1,9 +1,9 @@
 package board;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,29 +51,29 @@ public class Iceboard {
     }
 
     public void load(String fileName) {
-        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line = br.readLine();
-            int lineNumber = 0;
-            while (line != null) {
-                if(lineNumber == 0){
+        try
+        {
+            int r = 0;
+            var lines= Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
 
+            for (int lineNumber=0;lineNumber<lines.size();lineNumber++) {
+                if(lineNumber == 0){
+                    Pattern p= Pattern.compile("Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
+                    Matcher m= p.matcher(lines.get(lineNumber));
+                    if(m.matches()) {
+                        var test = m.toMatchResult().group(1);
+                        var test2 = m.toMatchResult().group(3);
+                    }
+                    lineNumber++;
                 }
                 else if (lineNumber == 1) continue;
                 else{
 
                 }
-                Pattern p= Pattern.compile("Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
-                Matcher m= p.matcher(line);
-                if(m.matches()) {
-                    var test = m.toMatchResult().group(1);
-                    var test2 = m.toMatchResult().group(3);
-                }
-                line = br.readLine();
-                lineNumber++;
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
