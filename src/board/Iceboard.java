@@ -51,29 +51,53 @@ public class Iceboard {
     }
 
     public void load(String fileName) {
-        try
-        {
-            int r = 0;
-            var lines= Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+        try {
+            gameBoard = new Cell[9][9];
+            File file = new File(fileName);
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(file));
+            BufferedReader reader = new BufferedReader(isr);
 
-            for (int lineNumber=0;lineNumber<lines.size();lineNumber++) {
-                if(lineNumber == 0){
-                    Pattern p= Pattern.compile("Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
-                    Matcher m= p.matcher(lines.get(lineNumber));
-                    if(m.matches()) {
-                        var test = m.toMatchResult().group(1);
-                        var test2 = m.toMatchResult().group(3);
-                    }
-                    lineNumber++;
-                }
-                else if (lineNumber == 1) continue;
-                else{
-
-                }
+            String line = reader.readLine();
+            Pattern p = Pattern.compile(" Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
+            Matcher m = p.matcher(line);
+            if (m.find()) {
+                redScore = Integer.parseInt(m.toMatchResult().group(1));
+                blackScore = Integer.parseInt(m.toMatchResult().group(3));
             }
-        }
-        catch (IOException e)
-        {
+
+            line = reader.readLine();
+            int lineNumber = 0;
+            while (reader.ready()) {
+                line = reader.readLine();
+                int index = 0;
+                for (int i = 1; i < line.length(); i++) {
+                    char c = line.charAt(i);
+                    switch (c) {
+                        case ' ':
+                            break;
+                        case 'o':
+                            gameBoard[lineNumber][index] = new Cell(CellState.ICEBERG);
+                            index++;
+                            break;
+                        case '•':
+                            gameBoard[lineNumber][index] = new Cell(CellState.EMPTY);
+                            index++;
+                            break;
+                        case 'R':
+                            gameBoard[lineNumber][index] = new Cell(CellState.RED);
+                            index++;
+                            break;
+                        case 'B':
+                            gameBoard[lineNumber][index] = new Cell(CellState.BLACK);
+                            index++;
+                            break;
+                    }
+                }
+                lineNumber++;
+            }
+
+            var test = gameBoard;
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
