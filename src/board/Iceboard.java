@@ -65,12 +65,14 @@ public class Iceboard {
                 blackScore = Integer.parseInt(m.toMatchResult().group(3));
             }
 
+            //on saute une ligne
             line = reader.readLine();
             int lineNumber = 0;
+
             while (reader.ready()) {
                 line = reader.readLine();
                 int index = 0;
-                for (int i = 1; i < line.length(); i++) {
+                for (int i = 2; i < line.length(); i++) {
                     char c = line.charAt(i);
                     switch (c) {
                         case ' ':
@@ -95,8 +97,6 @@ public class Iceboard {
                 }
                 lineNumber++;
             }
-
-            var test = gameBoard;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -113,25 +113,37 @@ public class Iceboard {
         char line = 'A';
         for(int i = 0; i < 9; i++){
             s += line + " ";
-            for(int j = 0; j < 9; j++){
-                switch (gameBoard[i][j].getState()){
-                    case RED:
-                        s+= " R ";
-                        break;
-                    case BLACK:
-                        s += " B ";
-                        break;
-                    case ICEBERG:
-                        s += " O ";
-                        break;
-                    case EMPTY:
-                        s += " • ";
-                        break;
+            String toPrint = "";
+            int charcount = 0;
+            for(int j = 0; j < gameBoard[i].length; j++){
+                if(gameBoard[i][j] != null){
+                    switch (gameBoard[i][j].getState()){
+                        case RED:
+                            toPrint+= " R  ";
+                            charcount++;
+                            break;
+                        case BLACK:
+                            toPrint += " B  ";
+                            charcount++;
+                            break;
+                        case ICEBERG:
+                            toPrint += " o  ";
+                            charcount++;
+                            break;
+                        case EMPTY:
+                            toPrint += " •  ";
+                            charcount++;
+                            break;
+                    }
                 }
             }
 
+            for(int space = 0;space < 9-charcount;space++){
+                toPrint = "  " + toPrint;
+            }
+
             line++;
-            s += "\n";
+            s += toPrint + "\n";
         }
 
         return s;
