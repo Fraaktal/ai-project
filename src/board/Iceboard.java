@@ -1,9 +1,6 @@
 package board;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +45,9 @@ public class Iceboard {
     }
 
     public static void playMove(String move) {
+        //TODO D2−C2
+        
+
     }
 
     public void load(String fileName) {
