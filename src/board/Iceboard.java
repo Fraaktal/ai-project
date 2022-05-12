@@ -21,29 +21,7 @@ public class Iceboard {
     }
 
     private void initializeBoard() {
-        int rangeMin = 0;
-        int rangeMax = 4;
-        this.gameBoard = new Cell[SIZE][SIZE];
-        for(int i = 0 ; i < SIZE ; i++){
-            for (int j = 0 ; j < SIZE ; j++) {
-                if(j >= rangeMin && j <= rangeMax){
-                    // TODO: Set edges
-                    this.gameBoard[i][j] = new Cell(CellState.ICEBERG);
-                }
-                else {
-                    // TODO: Set edges for valid cells
-                    this.gameBoard[i][j] = new Cell(CellState.OUT_OF_BOARD);
-                }
-            }
-        }
-
-        // Initial player positions
-        this.gameBoard[0][4] = new Cell(CellState.RED);
-        this.gameBoard[4][0] = new Cell(CellState.BLACK);
-        this.gameBoard[4][8] = new Cell(CellState.BLACK);
-        this.gameBoard[0][0] = new Cell(CellState.RED);
-        this.gameBoard[8][0] = new Cell(CellState.RED);
-        this.gameBoard[8][4] = new Cell(CellState.BLACK);
+        load(getClass().getResource("/resource/plateau_init.txt").getPath());
     }
 
     public void playMove(String move) {
@@ -104,7 +82,7 @@ public class Iceboard {
     public String toString() {
         String s = "Red Score : " + redScore + " --- Black Score : " + blackScore + "\n\n";
         char line = 'A';
-        for(int i = 0; i < 9; i++){
+        for(int i = 0; i < SIZE; i++){
             String toPrint = "";
             int charCount = 0;
 
@@ -131,7 +109,7 @@ public class Iceboard {
                 }
             }
 
-            for(int space = 0;space < 9-charCount;space++){
+            for(int space = 0;space < SIZE-charCount;space++){
                 toPrint = "  " + toPrint;
             }
 
