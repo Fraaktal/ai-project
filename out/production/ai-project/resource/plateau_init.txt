@@ -1,0 +1,12 @@
+ Red Score : 0 --- Black Score : 0
+
+ A          R   o   o   o   B
+ B        o   o   o   o   o   o
+ C      o   o   o   o   o   o   o
+ D    o   o   o   o   o   o   o   o
+ E  B   o   o   o   o   o   o   o   R
+ F    o   o   o   o   o   o   o   o
+ G      o   o   o   o   o   o   o
+ H        o   o   o   o   o   o
+ I          R   o   o   o   B
+
