@@ -1,6 +1,7 @@
 package board;
 
 import game.IceMove;
+import game.IcebergRole;
 
 import java.io.*;
 import java.util.Set;
@@ -24,11 +25,21 @@ public class Iceboard {
         load(getClass().getResource("/resource/plateau_init.txt").getPath());
     }
 
-    public void playMove(String move) {
+    public void playMove(String move, IcebergRole role) {
         IceMove iceMove = new IceMove(move);
-        var cell = gameBoard[iceMove.getOriginLine()][iceMove.getOriginColumn()];
-        gameBoard[iceMove.getDestinationLine()][iceMove.getDestinationColumn()] = cell;
+        var originCell = gameBoard[iceMove.getOriginLine()][iceMove.getOriginColumn()];
+        var destinationCell = gameBoard[iceMove.getDestinationLine()][iceMove.getDestinationColumn()];
+
+        if(destinationCell.getState() == CellState.ICEBERG){
+            if(role == IcebergRole.RED)
+                redScore++;
+            else
+                blackScore++;
+        }
+
+        gameBoard[iceMove.getDestinationLine()][iceMove.getDestinationColumn()] = originCell;
         gameBoard[iceMove.getOriginLine()][iceMove.getOriginColumn()] = new Cell(CellState.EMPTY);
+
     }
 
     public void load(String fileName) {

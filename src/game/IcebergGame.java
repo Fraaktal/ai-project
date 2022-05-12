@@ -1,12 +1,15 @@
 package game;
 
-import board.Iceboard;
-
 public class IcebergGame {
     public static void main(String[] args) {
-        Challenger challenger = new Challenger();
+        MyChallenger challenger = new MyChallenger();
         System.out.print(challenger.boardToString());
-        challenger.setBoardFromFile("/home/tom/dev/IA/plateau_initial.txt");
+        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau.txt");
+        System.out.print(challenger.boardToString());
+        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau2.txt");
+        System.out.print(challenger.boardToString());
+        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\init.txt");
+        System.out.print(challenger.boardToString());
         challenger.setRole("RED");
 
         challenger.iPlay("A1-A2");
