@@ -1,31 +1,34 @@
 package game;
 
+import board.Position;
+
+/**
+ * Représente un mouvement de case Joueur vers une case disponible
+ */
 public class IceMove {
+    private final Position origin;
+    private final Position destination;
 
-    public IceMove(String move){
-        var parts = move.split("-");
-        originLine = parts[0].trim().charAt(0)-'A'; //line origin
-        originColumn =  parts[0].trim().charAt(1)-'1'; //column origin
-
-        destinationLine =  parts[1].trim().charAt(0) - 'A'; //line destination
-        destinationColumn =  parts[1].trim().charAt(1) - '1'; //column destination
+    public IceMove(Position origin, Position destination) {
+        this.origin = origin;
+        this.destination = destination;
     }
 
-    private int originLine, originColumn, destinationLine, destinationColumn;
-
-    public int getDestinationColumn() {
-        return destinationColumn;
+    public IceMove(String move) {
+        String[] fragments = move.split("-");
+        this.origin = new Position(fragments[0]);
+        this.destination = new Position(fragments[1]);
     }
 
-    public int getDestinationLine() {
-        return destinationLine;
+    public Position getDestination() {
+        return destination;
     }
 
-    public int getOriginColumn() {
-        return originColumn;
+    public Position getOrigin() {
+        return origin;
     }
 
-    public int getOriginLine() {
-        return originLine;
+    public String toString() {
+        return this.origin.toString() + '-' + this.destination.toString();
     }
 }

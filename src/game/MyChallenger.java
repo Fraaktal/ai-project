@@ -4,9 +4,9 @@ import board.Iceboard;
 
 import java.util.Set;
 
-public class MyChallenger implements IChallenger{
+public class MyChallenger implements IChallenger {
 
-    public MyChallenger(){
+    public MyChallenger() {
         gameBoard = new Iceboard();
         bestMoveSimulator = new BestMoveSimulator();
     }
@@ -27,13 +27,12 @@ public class MyChallenger implements IChallenger{
 
     @Override
     public void iPlay(String move) {
-        gameBoard.playMove(move, role);
+        // Iceboard.playMove(move);
     }
 
     @Override
     public void otherPlay(String move) {
-        var r = role == IcebergRole.RED?IcebergRole.BLACK:IcebergRole.RED;
-        gameBoard.playMove(move, r);
+        // Iceboard.playMove(move);
     }
 
     @Override
@@ -68,6 +67,6 @@ public class MyChallenger implements IChallenger{
 
     @Override
     public Set<String> possibleMoves(String role) {
-        return gameBoard.getPossibleMoves(role);
+        return gameBoard.getPossibleMoves(IcebergRole.valueOf(role));
     }
 }
