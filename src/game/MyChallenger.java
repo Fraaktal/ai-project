@@ -27,12 +27,13 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public void iPlay(String move) {
-        // Iceboard.playMove(move);
+        gameBoard.playMove(move, role);
     }
 
     @Override
     public void otherPlay(String move) {
-        // Iceboard.playMove(move);
+        var r = role == IcebergRole.RED?IcebergRole.BLACK:IcebergRole.RED;
+        gameBoard.playMove(move, r);
     }
 
     @Override
