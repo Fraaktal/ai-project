@@ -56,17 +56,13 @@ public class Iceboard {
     public void load(String fileName) {
         try {
             gameBoard = new Cell[9][9];
+
             File file = new File(fileName);
             InputStreamReader isr = new InputStreamReader(new FileInputStream(file));
             BufferedReader reader = new BufferedReader(isr);
 
             String line = reader.readLine();
-            Pattern p = Pattern.compile(" Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
-            Matcher m = p.matcher(line);
-            if (m.find()) {
-                redScore = Integer.parseInt(m.toMatchResult().group(1));
-                blackScore = Integer.parseInt(m.toMatchResult().group(3));
-            }
+            setScore(line);
 
             //on saute une ligne
             reader.readLine();
@@ -75,33 +71,27 @@ public class Iceboard {
             while (reader.ready()) {
                 line = reader.readLine();
                 int index = 0;
+
                 for (int i = 2; i < line.length(); i++) {
                     char c = line.charAt(i);
-                    switch (c) {
-                        case ' ':
-                            break;
-                        case 'o':
-                            gameBoard[lineNumber][index] = new Cell(CellState.ICEBERG);
-                            index++;
-                            break;
-                        case '•':
-                            gameBoard[lineNumber][index] = new Cell(CellState.EMPTY);
-                            index++;
-                            break;
-                        case 'R':
-                            gameBoard[lineNumber][index] = new Cell(CellState.RED);
-                            index++;
-                            break;
-                        case 'B':
-                            gameBoard[lineNumber][index] = new Cell(CellState.BLACK);
-                            index++;
-                            break;
-                    }
+                    if(c == ' ') continue;
+                    gameBoard[lineNumber][index] = new Cell(CellState.fromChar(c));
+                    index++;
                 }
+
                 lineNumber++;
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setScore(String scoreLine){
+        Pattern p = Pattern.compile(" Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
+        Matcher m = p.matcher(scoreLine);
+        if (m.find()) {
+            redScore = Integer.parseInt(m.toMatchResult().group(1));
+            blackScore = Integer.parseInt(m.toMatchResult().group(3));
         }
     }
 
@@ -115,9 +105,9 @@ public class Iceboard {
         String s = "Red Score : " + redScore + " --- Black Score : " + blackScore + "\n\n";
         char line = 'A';
         for(int i = 0; i < 9; i++){
-            s += line + " ";
             String toPrint = "";
             int charCount = 0;
+
             for(int j = 0; j < gameBoard[i].length; j++){
                 if(gameBoard[i][j] != null){
                     switch (gameBoard[i][j].getState()){
@@ -145,8 +135,8 @@ public class Iceboard {
                 toPrint = "  " + toPrint;
             }
 
+            s += line + " " + toPrint + "\n";
             line++;
-            s += toPrint + "\n";
         }
 
         return s;
