@@ -27,12 +27,12 @@ public class Challenger implements IChallenger{
 
     @Override
     public void iPlay(String move) {
-        Iceboard.playMove(move);
+        gameBoard.playMove(move);
     }
 
     @Override
     public void otherPlay(String move) {
-        Iceboard.playMove(move);
+        gameBoard.playMove(move);
     }
 
     @Override

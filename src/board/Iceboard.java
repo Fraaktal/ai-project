@@ -1,5 +1,7 @@
 package board;
 
+import game.IceMove;
+
 import java.io.*;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -44,10 +46,11 @@ public class Iceboard {
         this.gameBoard[8][4] = new Cell(CellState.BLACK);
     }
 
-    public static void playMove(String move) {
-        //TODO D2−C2
-        
-
+    public void playMove(String move) {
+        IceMove iceMove = new IceMove(move);
+        var cell = gameBoard[iceMove.getOriginLine()][iceMove.getOriginColumn()];
+        gameBoard[iceMove.getDestinationLine()][iceMove.getDestinationColumn()] = cell;
+        gameBoard[iceMove.getOriginLine()][iceMove.getOriginColumn()] = new Cell(CellState.EMPTY);
     }
 
     public void load(String fileName) {
@@ -66,7 +69,7 @@ public class Iceboard {
             }
 
             //on saute une ligne
-            line = reader.readLine();
+            reader.readLine();
             int lineNumber = 0;
 
             while (reader.ready()) {
@@ -114,31 +117,31 @@ public class Iceboard {
         for(int i = 0; i < 9; i++){
             s += line + " ";
             String toPrint = "";
-            int charcount = 0;
+            int charCount = 0;
             for(int j = 0; j < gameBoard[i].length; j++){
                 if(gameBoard[i][j] != null){
                     switch (gameBoard[i][j].getState()){
                         case RED:
                             toPrint+= " R  ";
-                            charcount++;
+                            charCount++;
                             break;
                         case BLACK:
                             toPrint += " B  ";
-                            charcount++;
+                            charCount++;
                             break;
                         case ICEBERG:
                             toPrint += " o  ";
-                            charcount++;
+                            charCount++;
                             break;
                         case EMPTY:
                             toPrint += " •  ";
-                            charcount++;
+                            charCount++;
                             break;
                     }
                 }
             }
 
-            for(int space = 0;space < 9-charcount;space++){
+            for(int space = 0;space < 9-charCount;space++){
                 toPrint = "  " + toPrint;
             }
 

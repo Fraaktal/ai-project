@@ -8,6 +8,6 @@ public class IcebergGame {
         board.load("/home/tom/dev/IA/plateau_initial.txt");
         System.out.println("Chargement terminé");
         System.out.print(board.toString());
-        IceMove move = new IceMove("D2-C3");
+        board.playMove("A1-A2");
     }
 }
