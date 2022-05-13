@@ -268,6 +268,8 @@ public class Iceboard {
      */
     public void load(String fileName) {
         try {
+            this.redPawns = new ArrayList<>();
+            this.blackPawns = new ArrayList<>();
             gameBoard = new Cell[SIZE][SIZE];
 
             File file = new File(fileName);
