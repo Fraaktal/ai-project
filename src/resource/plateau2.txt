@@ -1,0 +1,12 @@
+ Red Score : 7 --- Black Score : 6
+
+ A          •   •   •   o   •
+ B        o   •   •   •   •   o
+ C      o   o   o   R   •   •   o
+ D    o   o   o   o   o   •   o   o
+ E  B   o   o   o   o   B   o   o   R
+ F    o   o   o   o   o   o   o   o
+ G      o   o   o   o   o   o   o
+ H        o   R   o   o   B   o
+ I          •   o   o   o   •
+
