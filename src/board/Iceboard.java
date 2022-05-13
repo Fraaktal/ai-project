@@ -204,7 +204,7 @@ public class Iceboard {
 
         for (Cell pawn : playerPawns) {
             // Breadth First Search
-            Queue<Node> frontier = new PriorityQueue<>();
+            LinkedList<Node> frontier = new LinkedList<>();
             frontier.add(new Node(pawn, 0));
             int maxDepth = 0;
 
@@ -215,7 +215,7 @@ public class Iceboard {
             ArrayList<Cell> nearestIcebergs = new ArrayList<>();
 
             while (!frontier.isEmpty()) {
-                Node current = frontier.poll();
+                Node current = frontier.removeFirst();
 
                 if (current.getDepth() > maxDepth)
                     maxDepth = current.getDepth();
@@ -237,7 +237,7 @@ public class Iceboard {
 
                 for (Cell next : this.getNeighbors(current.getCell(), role)) {
                     if (!cameFrom.containsKey(next.getPosition().toString())) {
-                        frontier.add(new Node(next, current.getDepth() + 1));
+                        frontier.offer(new Node(next, current.getDepth() + 1));
                         cameFrom.put(next.getPosition().toString(), current.getCell().getPosition().toString());
                     }
                 }
