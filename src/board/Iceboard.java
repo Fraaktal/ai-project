@@ -127,11 +127,8 @@ public class Iceboard {
      */
     private Position getNeighborPosition(Position current, Position direction) {
         Position newPosition = new Position(current.getX() + direction.getX(), current.getY() + direction.getY());
-        int mid = SIZE/2;
-        int x = newPosition.getX();
-        int yMax = x < mid ? SIZE - mid + x : (x > mid ? SIZE + mid - x : SIZE);
-        return newPosition.getX() >= 0 && newPosition.getX() < SIZE && newPosition.getY() >= 0 && newPosition.getY() < yMax ?
-                newPosition : null;
+
+        return newPosition.getX() >= 0 && newPosition.getX() < SIZE && newPosition.getY() >= 0 && newPosition.getY() < SIZE ? newPosition : null;
     }
 
     /**
@@ -145,12 +142,11 @@ public class Iceboard {
     private Cell getNeighbor(Position current, Position direction, CellState opponent) {
         Position neighborPosition = getNeighborPosition(current, direction);
 
-        if (neighborPosition == null)
-            return null;
+        if (neighborPosition == null) return null;
 
         Cell neighbor = this.gameBoard[neighborPosition.getX()][neighborPosition.getY()];
 
-        if (neighbor.getState() == CellState.OUT_OF_BOARD || neighbor.getState() == opponent)
+        if (neighbor == null || neighbor.getState() == opponent)
             return null;
 
         return neighbor;
