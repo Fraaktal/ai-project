@@ -254,25 +254,47 @@ public class Iceboard {
             // TODO: Got only one path per iceberg
             for (Cell iceberg : nearestIcebergs) {
                 String icebergPosition = iceberg.getPosition().toString();
+                ArrayList<String> paths = new ArrayList<String>();
+                paths.add(icebergPosition);
 
-                ArrayList<String> path = new ArrayList<>();
 
-                /*for (Entry<String, Integer> possiblePath : cameFrom.get(icebergPosition)) {
-                    String current = possiblePath.getKey();
-                    while (!current.equals(pawn.getPosition().toString())) {
-                        path.add(current);
-                        current = cameFrom.get(current).get(0); // TODO: Develop
+                for (Entry<String, Integer> iceParent : cameFrom.get(icebergPosition)) {
+                    ArrayList<String> parents = new ArrayList<>();
+                    parents.add(iceParent.getKey());
+
+                    while (!areAllEquals(parents,pawn.getPosition().toString())) {
+                        paths = new ArrayList<>();
+                        ArrayList<String> tmp = new ArrayList<>();
+
+                        for (var parent:parents) {
+                            paths.add(parent);
+
+                            for (var p:cameFrom.get(parent)) {
+                                tmp.add(p.getKey());
+                            }
+                        }
+                        parents = tmp;
+
                     }
-
-                    Collections.reverse(path);
-                    moves.add(pawn.getPosition().toString() + '-' + path.get(0));
-                }*/
+                    for (var path:paths) {
+                        moves.add(pawn.getPosition().toString() + '-' + path);
+                    }
+                }
             }
         }
 
         return moves;
     }
 
+    Boolean areAllEquals(ArrayList<String> list, String toCheck){
+        for (var item:list) {
+            if(!item.equals(toCheck)){
+                return false;
+            }
+        }
+
+        return true;
+    }
     /**
      * Charge un fichier et le convertit en plateau
      *
