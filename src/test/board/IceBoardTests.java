@@ -71,13 +71,12 @@ class IceboardTests {
         iceboard.load(getClass().getResource("/resource/plateau3.txt").getPath());
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
-        System.out.println(possibleMoves);
-        Set<String> expectedMoves = new HashSet<>(Arrays.asList("G3-G2", "G3-H3"));
+        Set<String> expectedMoves = new HashSet<>();
         assertTrue(possibleMoves.containsAll(expectedMoves));
         assertEquals(possibleMoves.size(), expectedMoves.size());
 
         possibleMoves = iceboard.getPossibleMoves(IcebergRole.BLACK);
-        expectedMoves = new HashSet<>(Arrays.asList("H1-I1", "H2,I1", "I2-I1"));
+        expectedMoves = new HashSet<>(Arrays.asList("H1-I1", "H2-I1", "I2-I1"));
         assertTrue(possibleMoves.containsAll(expectedMoves));
         assertEquals(possibleMoves.size(), expectedMoves.size());
     }
@@ -93,7 +92,6 @@ class IceboardTests {
         assertEquals(possibleMoves.size(), expectedMoves.size());
 
         possibleMoves = iceboard.getPossibleMoves(IcebergRole.BLACK);
-        System.out.println(possibleMoves);
         expectedMoves = new HashSet<>(Arrays.asList("H1-I1", "H2-I1", "I2-I1"));
         assertTrue(possibleMoves.containsAll(expectedMoves));
         assertEquals(possibleMoves.size(), expectedMoves.size());
@@ -105,7 +103,6 @@ class IceboardTests {
         iceboard.load(getClass().getResource("/resource/plateau5.txt").getPath());
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
-        System.out.println(possibleMoves);
         Set<String> expectedMoves = new HashSet<>(Arrays.asList("A2-A1", "B2-A1", "A3-B4"));
         assertTrue(possibleMoves.containsAll(expectedMoves));
         assertEquals(possibleMoves.size(), expectedMoves.size());
