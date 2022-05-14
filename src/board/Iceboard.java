@@ -6,6 +6,8 @@ import game.IcebergRole;
 import java.io.*;
 import java.util.*;
 import java.util.Set;
+import java.util.Map.Entry;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -205,12 +207,14 @@ public class Iceboard {
         for (Cell pawn : playerPawns) {
             // Breadth First Search
             LinkedList<Node> frontier = new LinkedList<>();
+            // TODO: Use Entry
             frontier.add(new Node(pawn, 0));
             int maxDepth = 0;
 
             // Clé : case d'origine ; Valeur : case de destination
-            Map<String, String> cameFrom = new HashMap<>();
-            cameFrom.put(pawn.getPosition().toString(), null);
+            // TODO: Save depth in cameFrom
+            Map<String, ArrayList<Map.Entry<String, Integer>>> cameFrom = new HashMap<>();
+            cameFrom.put(pawn.getPosition().toString(), new ArrayList<>());
 
             ArrayList<Cell> nearestIcebergs = new ArrayList<>();
 
@@ -236,25 +240,33 @@ public class Iceboard {
                 }
 
                 for (Cell next : this.getNeighbors(current.getCell(), role)) {
+                    int newDepth = current.getDepth() + 1;
                     if (!cameFrom.containsKey(next.getPosition().toString())) {
-                        frontier.offer(new Node(next, current.getDepth() + 1));
-                        cameFrom.put(next.getPosition().toString(), current.getCell().getPosition().toString());
+                        frontier.offer(new Node(next, newDepth));
+                        cameFrom.put(next.getPosition().toString(), new ArrayList<>(){{ add(new SimpleEntry<>(current.getCell().getPosition().toString(), newDepth)); }});
+                    } else if (cameFrom.get(next.getPosition().toString()).stream().allMatch(parent -> parent.getValue() == newDepth)) {
+                        cameFrom.get(next.getPosition().toString()).add(new SimpleEntry<>(current.getCell().getPosition().toString(), newDepth));
                     }
                 }
             }
 
             // Récupère les cases voisines éligibles au mouvement
+            // TODO: Got only one path per iceberg
             for (Cell iceberg : nearestIcebergs) {
-                String current = iceberg.getPosition().toString();
+                String icebergPosition = iceberg.getPosition().toString();
+
                 ArrayList<String> path = new ArrayList<>();
 
-                while (!current.equals(pawn.getPosition().toString())) {
-                    path.add(current);
-                    current = cameFrom.get(current);
-                }
+                /*for (Entry<String, Integer> possiblePath : cameFrom.get(icebergPosition)) {
+                    String current = possiblePath.getKey();
+                    while (!current.equals(pawn.getPosition().toString())) {
+                        path.add(current);
+                        current = cameFrom.get(current).get(0); // TODO: Develop
+                    }
 
-                Collections.reverse(path);
-                moves.add(pawn.getPosition().toString() + '-' + path.get(0));
+                    Collections.reverse(path);
+                    moves.add(pawn.getPosition().toString() + '-' + path.get(0));
+                }*/
             }
         }
 
