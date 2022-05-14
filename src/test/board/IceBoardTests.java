@@ -88,13 +88,25 @@ class IceboardTests {
         iceboard.load(getClass().getResource("/resource/plateau4.txt").getPath());
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
-        System.out.println(possibleMoves);
         Set<String> expectedMoves = new HashSet<>(Arrays.asList("G3-F4"));
         assertTrue(possibleMoves.containsAll(expectedMoves));
         assertEquals(possibleMoves.size(), expectedMoves.size());
 
         possibleMoves = iceboard.getPossibleMoves(IcebergRole.BLACK);
-        expectedMoves = new HashSet<>(Arrays.asList("H1-I1", "H2,I1", "I2-I1"));
+        System.out.println(possibleMoves);
+        expectedMoves = new HashSet<>(Arrays.asList("H1-I1", "H2-I1", "I2-I1"));
+        assertTrue(possibleMoves.containsAll(expectedMoves));
+        assertEquals(possibleMoves.size(), expectedMoves.size());
+    }
+
+    @Test
+    void getPossibleMoves5Test() {
+        Iceboard iceboard = new Iceboard();
+        iceboard.load(getClass().getResource("/resource/plateau5.txt").getPath());
+
+        Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
+        System.out.println(possibleMoves);
+        Set<String> expectedMoves = new HashSet<>(Arrays.asList("A2-A1", "B2-A1", "A3-B4"));
         assertTrue(possibleMoves.containsAll(expectedMoves));
         assertEquals(possibleMoves.size(), expectedMoves.size());
     }

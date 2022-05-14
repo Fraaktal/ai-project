@@ -138,17 +138,16 @@ public class Iceboard {
      *
      * @param current Coordonnées de la case actuelle
      * @param direction Vecteur de direction pour obtenir le voisin
-     * @param opponent Type de case adversaire
      * @return Case voisine si valide, null sinon
      */
-    private Cell getNeighbor(Position current, Position direction, CellState opponent) {
+    private Cell getNeighbor(Position current, Position direction) {
         Position neighborPosition = getNeighborPosition(current, direction);
 
         if (neighborPosition == null) return null;
 
         Cell neighbor = this.gameBoard[neighborPosition.getX()][neighborPosition.getY()];
 
-        if (neighbor == null || neighbor.getState() == opponent)
+        if (neighbor == null || neighbor.getState() == CellState.RED ||neighbor.getState() == CellState.BLACK)
             return null;
 
         return neighbor;
@@ -164,25 +163,24 @@ public class Iceboard {
         Position position = current.getPosition();
         int midRow = SIZE / 2;
         ArrayList<Cell> neighbors = new ArrayList<>();
-        CellState opponent = role == IcebergRole.RED ? CellState.BLACK : CellState.RED;
 
         if (position.getX() < midRow) {
             for (Position d : DIRECTIONS_TOP) {
-                Cell neighbor = this.getNeighbor(position, d, opponent);
+                Cell neighbor = this.getNeighbor(position, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
             }
         } else if (position.getX() == midRow) {
             for (Position d : DIRECTIONS_MID) {
-                Cell neighbor = this.getNeighbor(position, d, opponent);
+                Cell neighbor = this.getNeighbor(position, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
             }
         } else {
             for (Position d : DIRECTIONS_DOWN) {
-                Cell neighbor = this.getNeighbor(position, d, opponent);
+                Cell neighbor = this.getNeighbor(position, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
@@ -251,7 +249,7 @@ public class Iceboard {
             }
 
             // Récupère les cases voisines éligibles au mouvement
-            // TODO: Got only one path per iceberg
+            // TODO: nettoyer si possible...
             for (Cell iceberg : nearestIcebergs) {
                 String icebergPosition = iceberg.getPosition().toString();
                 ArrayList<String> paths = new ArrayList<String>();
@@ -259,12 +257,12 @@ public class Iceboard {
 
 
                 for (Entry<String, Integer> iceParent : cameFrom.get(icebergPosition)) {
-                    ArrayList<String> parents = new ArrayList<>();
+                    HashSet<String> parents = new HashSet<>();
                     parents.add(iceParent.getKey());
 
                     while (!areAllEquals(parents,pawn.getPosition().toString())) {
                         paths = new ArrayList<>();
-                        ArrayList<String> tmp = new ArrayList<>();
+                        HashSet<String> tmp = new HashSet<>();
 
                         for (var parent:parents) {
                             paths.add(parent);
@@ -286,7 +284,7 @@ public class Iceboard {
         return moves;
     }
 
-    Boolean areAllEquals(ArrayList<String> list, String toCheck){
+    Boolean areAllEquals(HashSet<String> list, String toCheck){
         for (var item:list) {
             if(!item.equals(toCheck)){
                 return false;
