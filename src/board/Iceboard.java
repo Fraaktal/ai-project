@@ -11,6 +11,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * Gestion du jeu Icebreaker
  */
@@ -202,7 +204,7 @@ public class Iceboard {
         // Cases correspondant au joueur du rôle donné
         ArrayList<Cell> playerPawns = new ArrayList<>(role == IcebergRole.RED ? this.redPawns : this.blackPawns);
 
-        for (Cell pawn : playerPawns) {
+        for (var pawn : playerPawns) {
             // Breadth First Search
             LinkedList<Node> frontier = new LinkedList<>();
             // TODO: Use Entry
@@ -226,7 +228,7 @@ public class Iceboard {
                     nearestIcebergs.add(current.getCell());
 
                     // Trouve les icebergs possibles dans la même profondeur
-                    for (Node node : frontier) {
+                    for (var node : frontier) {
                         if (node.getDepth() > current.getDepth())
                             break;
                         if (node.getCell().getState() == CellState.ICEBERG) {
@@ -237,44 +239,45 @@ public class Iceboard {
                     break;
                 }
 
-                for (Cell next : this.getNeighbors(current.getCell(), role)) {
+                for (var next : this.getNeighbors(current.getCell(), role)) {
+                    String currentKey = current.getCell().getPosition().toString();
                     int newDepth = current.getDepth() + 1;
-                    if (!cameFrom.containsKey(next.getPosition().toString())) {
+                    String nextKey = next.getPosition().toString();
+                    if (!cameFrom.containsKey(nextKey)) {
                         frontier.offer(new Node(next, newDepth));
-                        cameFrom.put(next.getPosition().toString(), new ArrayList<>(){{ add(new SimpleEntry<>(current.getCell().getPosition().toString(), newDepth)); }});
-                    } else if (cameFrom.get(next.getPosition().toString()).stream().allMatch(parent -> parent.getValue() == newDepth)) {
-                        cameFrom.get(next.getPosition().toString()).add(new SimpleEntry<>(current.getCell().getPosition().toString(), newDepth));
+                        cameFrom.put(nextKey, new ArrayList<>(){{ add(new SimpleEntry<>(currentKey, newDepth)); }});
+                    } else if (cameFrom.get(nextKey).stream().allMatch(parent -> parent.getValue() == newDepth)) {
+                        cameFrom.get(nextKey).add(new SimpleEntry<>(currentKey, newDepth));
                     }
                 }
             }
 
             // Récupère les cases voisines éligibles au mouvement
             // TODO: nettoyer si possible...
-            for (Cell iceberg : nearestIcebergs) {
+            for (var iceberg : nearestIcebergs) {
                 String icebergPosition = iceberg.getPosition().toString();
-                ArrayList<String> paths = new ArrayList<String>();
+                ArrayList<String> paths = new ArrayList<>();
                 paths.add(icebergPosition);
 
+                // Parents d'un iceberg
+                for (var iceParent : cameFrom.get(icebergPosition)) {
+                    HashSet<String> parents = new HashSet<>(){{ add(iceParent.getKey()); }};
 
-                for (Entry<String, Integer> iceParent : cameFrom.get(icebergPosition)) {
-                    HashSet<String> parents = new HashSet<>();
-                    parents.add(iceParent.getKey());
-
-                    while (!areAllEquals(parents,pawn.getPosition().toString())) {
+                    // Déroulement des chemins les plus courts trouvés précédemment
+                    while (parents.stream().noneMatch(parent -> parent.equals(pawn.getPosition().toString()))) {
                         paths = new ArrayList<>();
-                        HashSet<String> tmp = new HashSet<>();
+                        // Récupère les grands-parents (profondeur précédente) pour dérouler tous les chemins possibles
+                        HashSet<String> grandParents = new HashSet<>();
 
-                        for (var parent:parents) {
+                        for (var parent : parents) {
                             paths.add(parent);
 
-                            for (var p:cameFrom.get(parent)) {
-                                tmp.add(p.getKey());
-                            }
+                            grandParents.addAll(cameFrom.get(parent).stream().map(Entry::getKey).collect(toList()));
                         }
-                        parents = tmp;
-
+                        parents = grandParents;
                     }
-                    for (var path:paths) {
+
+                    for (var path : paths) {
                         moves.add(pawn.getPosition().toString() + '-' + path);
                     }
                 }
@@ -284,15 +287,6 @@ public class Iceboard {
         return moves;
     }
 
-    Boolean areAllEquals(HashSet<String> list, String toCheck){
-        for (var item:list) {
-            if(!item.equals(toCheck)){
-                return false;
-            }
-        }
-
-        return true;
-    }
     /**
      * Charge un fichier et le convertit en plateau
      *
