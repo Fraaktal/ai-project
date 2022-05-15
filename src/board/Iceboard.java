@@ -277,9 +277,7 @@ public class Iceboard {
                         parents = grandParents;
                     }
 
-                    for (var path : paths) {
-                        moves.add(pawn.getPosition().toString() + '-' + path);
-                    }
+                    moves.addAll(paths.stream().map(path -> pawn.getPosition().toString() + '-' + path).collect(toList()));
                 }
             }
         }
