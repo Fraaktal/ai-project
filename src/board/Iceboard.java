@@ -165,7 +165,7 @@ public class Iceboard {
      * @param current Case
      * @return Liste des cases voisines
      */
-    private ArrayList<Cell> getNeighbors(Cell current, IcebergRole role) {
+    private ArrayList<Cell> getNeighbors(Cell current) {
         Position position = current.getPosition();
         int midRow = SIZE / 2;
         ArrayList<Cell> neighbors = new ArrayList<>();
@@ -242,7 +242,7 @@ public class Iceboard {
                     break;
                 }
 
-                for (var next : this.getNeighbors(current.getKey(), role)) {
+                for (var next : this.getNeighbors(current.getKey())) {
                     String currentKey = current.getKey().getPosition().toString();
                     int newDepth = current.getValue() + 1;
                     String nextKey = next.getPosition().toString();
