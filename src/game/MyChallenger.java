@@ -4,8 +4,10 @@ import board.Iceboard;
 
 import java.util.Set;
 
+/**
+ * Challenger de l'équipe
+ */
 public class MyChallenger implements IChallenger {
-
     public MyChallenger() {
         gameBoard = new Iceboard();
         bestMoveSimulator = new BestMoveSimulator();
@@ -32,7 +34,7 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public void otherPlay(String move) {
-        var r = role == IcebergRole.RED?IcebergRole.BLACK:IcebergRole.RED;
+        var r = role == IcebergRole.RED ? IcebergRole.BLACK : IcebergRole.RED;
         gameBoard.playMove(move, r);
     }
 
