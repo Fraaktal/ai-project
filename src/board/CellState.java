@@ -4,7 +4,6 @@ package board;
  * Différents états d'une case
  */
 public enum CellState {
-    OUT_OF_BOARD,
     RED,
     BLACK,
     ICEBERG,
@@ -16,7 +15,7 @@ public enum CellState {
             case '•': return CellState.EMPTY;
             case 'R': return CellState.RED;
             case 'B': return CellState.BLACK;
-            default: return CellState.OUT_OF_BOARD;
+            default: return null;
         }
     }
 }
