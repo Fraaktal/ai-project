@@ -30,7 +30,5 @@ public class IcebergGame {
         System.out.print(challenger.defeat());
         System.out.print("\n");
         System.out.print(challenger.tie());
-
-
     }
 }
