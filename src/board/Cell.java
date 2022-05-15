@@ -1,7 +1,5 @@
 package board;
 
-import java.util.ArrayList;
-
 /**
  * Représente une case du plateau
  */
