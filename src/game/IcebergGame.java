@@ -17,10 +17,18 @@ public class IcebergGame {
         challenger.otherPlay("A5-A4");
         System.out.print(challenger.boardToString());
 
+        System.out.print("Possible moves RED :\n");
+        System.out.print(challenger.possibleMoves("RED"));
+        System.out.print("\nPossible moves BLACK :\n");
+        System.out.print(challenger.possibleMoves("BLACK"));
+        System.out.print("\n");
+
         System.out.print(challenger.victory());
         System.out.print("\n");
         System.out.print(challenger.defeat());
         System.out.print("\n");
         System.out.print(challenger.tie());
+
+
     }
 }
