@@ -36,7 +36,7 @@ class IceboardTests {
     @Test
     void getPossibleMoves1Test() {
         Iceboard iceboard = new Iceboard();
-        iceboard.load(getClass().getResource("/resource/plateau1.txt").getPath());
+        iceboard.load(getClass().getResourceAsStream("/resource/plateau1.txt"));
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
         Set<String> expectedMoves = new HashSet<>(Arrays.asList("A1-A2", "A1-B2", "E9-E8", "E9-D8", "I1-I2"));
@@ -52,7 +52,7 @@ class IceboardTests {
     @Test
     void getPossibleMoves2Test() {
         Iceboard iceboard = new Iceboard();
-        iceboard.load(getClass().getResource("/resource/plateau2.txt").getPath());
+        iceboard.load(getClass().getResourceAsStream("/resource/plateau2.txt"));
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
         Set<String> expectedMoves = new HashSet<>(Arrays.asList("C4-C3", "C4-D4", "C4-D5", "H2-H1", "H2-H3", "H2-G2", "H2-G3", "H2-I2", "E9-E8", "E9-D8", "E9-F8"));
@@ -68,7 +68,7 @@ class IceboardTests {
     @Test
     void getPossibleMoves3Test() {
         Iceboard iceboard = new Iceboard();
-        iceboard.load(getClass().getResource("/resource/plateau3.txt").getPath());
+        iceboard.load(getClass().getResourceAsStream("/resource/plateau3.txt"));
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
         Set<String> expectedMoves = new HashSet<>();
@@ -84,7 +84,7 @@ class IceboardTests {
     @Test
     void getPossibleMoves4Test() {
         Iceboard iceboard = new Iceboard();
-        iceboard.load(getClass().getResource("/resource/plateau4.txt").getPath());
+        iceboard.load(getClass().getResourceAsStream("/resource/plateau4.txt"));
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
         Set<String> expectedMoves = new HashSet<>(Arrays.asList("G3-F4"));
@@ -100,7 +100,7 @@ class IceboardTests {
     @Test
     void getPossibleMoves5Test() {
         Iceboard iceboard = new Iceboard();
-        iceboard.load(getClass().getResource("/resource/plateau5.txt").getPath());
+        iceboard.load(getClass().getResourceAsStream("/resource/plateau5.txt"));
 
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
         Set<String> expectedMoves = new HashSet<>(Arrays.asList("A2-A1", "B2-A1", "A3-B4"));

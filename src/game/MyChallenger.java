@@ -2,6 +2,8 @@ package game;
 
 import board.Iceboard;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Set;
 
 public class MyChallenger implements IChallenger {
@@ -63,7 +65,12 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public void setBoardFromFile(String fileName) {
-        gameBoard.load(fileName);
+        try {
+            gameBoard.load(new FileInputStream(fileName));
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

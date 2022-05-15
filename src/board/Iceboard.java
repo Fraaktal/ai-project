@@ -83,7 +83,7 @@ public class Iceboard {
      * Initialise le plateau avec le fichier par défaut
      */
     private void initializeBoard() {
-        load(getClass().getResource("/resource/plateau_init.txt").getPath());
+        load(getClass().getResourceAsStream("/resource/plateau_init.txt"));
     }
 
     /**
@@ -290,16 +290,15 @@ public class Iceboard {
     /**
      * Charge un fichier et le convertit en plateau
      *
-     * @param fileName Chemin du fichier
+     * @param stream stream du fichier
      */
-    public void load(String fileName) {
+    public void load(InputStream stream) {
         try {
             this.redPawns = new ArrayList<>();
             this.blackPawns = new ArrayList<>();
             gameBoard = new Cell[SIZE][SIZE];
 
-            File file = new File(fileName);
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(file));
+            InputStreamReader isr = new InputStreamReader(stream);
             BufferedReader reader = new BufferedReader(isr);
 
             String line = reader.readLine();

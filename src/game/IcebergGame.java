@@ -3,6 +3,8 @@ package game;
 public class IcebergGame {
     public static void main(String[] args) {
         MyChallenger challenger = new MyChallenger();
+        System.out.print(challenger.teamName());
+        System.out.print("\n");
         System.out.print(challenger.boardToString());
         challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau.txt");
         System.out.print(challenger.boardToString());
