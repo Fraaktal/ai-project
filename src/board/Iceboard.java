@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,7 +150,7 @@ public class Iceboard {
 
         Cell neighbor = this.gameBoard[neighborPosition.getX()][neighborPosition.getY()];
 
-        if (neighbor == null || neighbor.getState() == CellState.RED ||neighbor.getState() == CellState.BLACK)
+        if (neighbor == null || neighbor.getState() == CellState.RED || neighbor.getState() == CellState.BLACK)
             return null;
 
         return neighbor;
@@ -167,21 +168,21 @@ public class Iceboard {
         ArrayList<Cell> neighbors = new ArrayList<>();
 
         if (position.getX() < midRow) {
-            for (Position d : DIRECTIONS_TOP) {
+            for (var d : DIRECTIONS_TOP) {
                 Cell neighbor = this.getNeighbor(position, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
             }
         } else if (position.getX() == midRow) {
-            for (Position d : DIRECTIONS_MID) {
+            for (var d : DIRECTIONS_MID) {
                 Cell neighbor = this.getNeighbor(position, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
             }
         } else {
-            for (Position d : DIRECTIONS_DOWN) {
+            for (var d : DIRECTIONS_DOWN) {
                 Cell neighbor = this.getNeighbor(position, d);
 
                 if (neighbor != null)
@@ -205,46 +206,45 @@ public class Iceboard {
         ArrayList<Cell> playerPawns = new ArrayList<>(role == IcebergRole.RED ? this.redPawns : this.blackPawns);
 
         for (var pawn : playerPawns) {
-            // Breadth First Search
-            LinkedList<Node> frontier = new LinkedList<>();
-            // TODO: Use Entry
-            frontier.add(new Node(pawn, 0));
+            // Breadth First Search (largeur)
+            LinkedList<SimpleImmutableEntry<Cell, Integer>> frontier = new LinkedList<>();
+            frontier.add(new SimpleImmutableEntry<>(pawn, 0));
             int maxDepth = 0;
 
             // Clé : case d'origine ; Valeur : case de destination
-            // TODO: Save depth in cameFrom
-            Map<String, ArrayList<Map.Entry<String, Integer>>> cameFrom = new HashMap<>();
+            Map<String, ArrayList<Entry<String, Integer>>> cameFrom = new HashMap<>();
             cameFrom.put(pawn.getPosition().toString(), new ArrayList<>());
 
             ArrayList<Cell> nearestIcebergs = new ArrayList<>();
 
             while (!frontier.isEmpty()) {
-                Node current = frontier.removeFirst();
+                SimpleImmutableEntry<Cell, Integer> current = frontier.removeFirst();
 
-                if (current.getDepth() > maxDepth)
-                    maxDepth = current.getDepth();
+                // On passe au niveau suivant
+                if (current.getValue() > maxDepth)
+                    maxDepth = current.getValue();
 
-                if (current.getCell().getState() == CellState.ICEBERG) {
-                    nearestIcebergs.add(current.getCell());
+                if (current.getKey().getState() == CellState.ICEBERG) {
+                    nearestIcebergs.add(current.getKey());
 
                     // Trouve les icebergs possibles dans la même profondeur
                     for (var node : frontier) {
-                        if (node.getDepth() > current.getDepth())
+                        if (node.getValue() > current.getValue())
                             break;
-                        if (node.getCell().getState() == CellState.ICEBERG) {
-                            nearestIcebergs.add(node.getCell());
-                        }
+
+                        if (node.getKey().getState() == CellState.ICEBERG)
+                            nearestIcebergs.add(node.getKey());
                     }
 
                     break;
                 }
 
-                for (var next : this.getNeighbors(current.getCell(), role)) {
-                    String currentKey = current.getCell().getPosition().toString();
-                    int newDepth = current.getDepth() + 1;
+                for (var next : this.getNeighbors(current.getKey(), role)) {
+                    String currentKey = current.getKey().getPosition().toString();
+                    int newDepth = current.getValue() + 1;
                     String nextKey = next.getPosition().toString();
                     if (!cameFrom.containsKey(nextKey)) {
-                        frontier.offer(new Node(next, newDepth));
+                        frontier.offer(new SimpleImmutableEntry<>(next, newDepth));
                         cameFrom.put(nextKey, new ArrayList<>(){{ add(new SimpleEntry<>(currentKey, newDepth)); }});
                     } else if (cameFrom.get(nextKey).stream().allMatch(parent -> parent.getValue() == newDepth)) {
                         cameFrom.get(nextKey).add(new SimpleEntry<>(currentKey, newDepth));
@@ -253,7 +253,6 @@ public class Iceboard {
             }
 
             // Récupère les cases voisines éligibles au mouvement
-            // TODO: nettoyer si possible...
             for (var iceberg : nearestIcebergs) {
                 String icebergPosition = iceberg.getPosition().toString();
                 ArrayList<String> paths = new ArrayList<>();
@@ -334,6 +333,11 @@ public class Iceboard {
         }
     }
 
+    /**
+     * Modifie le score actuel des deux joueurs à partir d'un fichier
+     *
+     * @param scoreLine Ligne du fichier contenant les scores
+     */
     private void setScore(String scoreLine){
         Pattern p = Pattern.compile(" Red Score : (?<red>([0-9]+)) --- Black Score : (?<black>([0-9]+))");
         Matcher m = p.matcher(scoreLine);
