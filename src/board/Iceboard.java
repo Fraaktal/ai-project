@@ -150,7 +150,10 @@ public class Iceboard {
 
         Cell neighbor = this.gameBoard[neighborPosition.getX()][neighborPosition.getY()];
 
-        if (neighbor == null || neighbor.getState() == CellState.RED || neighbor.getState() == CellState.BLACK)
+        if (neighbor == null
+                || neighbor.getState() == CellState.UNDEFINED
+                || neighbor.getState() == CellState.RED
+                || neighbor.getState() == CellState.BLACK)
             return null;
 
         return neighbor;

@@ -7,7 +7,8 @@ public enum CellState {
     RED,
     BLACK,
     ICEBERG,
-    EMPTY;
+    EMPTY,
+    UNDEFINED;
 
     public static CellState fromChar(char c) {
         switch (c) {
@@ -15,7 +16,7 @@ public enum CellState {
             case '•': return CellState.EMPTY;
             case 'R': return CellState.RED;
             case 'B': return CellState.BLACK;
-            default: return null;
+            default: return CellState.UNDEFINED;
         }
     }
 }
