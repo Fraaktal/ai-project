@@ -1,6 +1,7 @@
 package game;
 
 import board.Iceboard;
+import game.algorithms.AlphaBeta;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,10 +13,8 @@ import java.util.Set;
 public class MyChallenger implements IChallenger {
     public MyChallenger() {
         gameBoard = new Iceboard();
-        bestMoveSimulator = new BestMoveSimulator();
     }
 
-    private BestMoveSimulator bestMoveSimulator;
     private Iceboard gameBoard;
     private IcebergRole role;
 
@@ -42,7 +41,8 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public String bestMove() {
-        return bestMoveSimulator.getBestMove(gameBoard, role);
+        AlphaBeta bestMoveComputer = new AlphaBeta(role);
+        return bestMoveComputer.bestMove(gameBoard, role, 3);
     }
 
     @Override

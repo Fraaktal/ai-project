@@ -79,6 +79,14 @@ public class Iceboard {
         initializeBoard();
     }
 
+    private Iceboard(Iceboard iceboard) {
+        this.redScore = iceboard.redScore;
+        this.blackScore = iceboard.blackScore;
+        this.redPawns = iceboard.redPawns;
+        this.blackPawns = iceboard.blackPawns;
+        this.gameBoard = iceboard.gameBoard;
+    }
+
     /**
      * Initialise le plateau avec le fichier par défaut
      */
@@ -121,6 +129,12 @@ public class Iceboard {
         originCell.getPosition().setY(iceMove.getDestination().getY());
 
         gameBoard[iceMove.getOrigin().getX()][iceMove.getOrigin().getY()] = new Cell(CellState.EMPTY, iceMove.getOrigin());
+    }
+
+    public Iceboard emulateMove(String move, IcebergRole role){
+        Iceboard newBoard = new Iceboard(this);
+        newBoard.playMove(move, role);
+        return newBoard;
     }
 
     /**
@@ -389,5 +403,9 @@ public class Iceboard {
         }
 
         return s.toString();
+    }
+
+    public boolean isGameOver() {
+        return redScore >= 28 || blackScore >= 28;
     }
 }
