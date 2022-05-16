@@ -2,6 +2,8 @@ package game;
 
 import board.Iceboard;
 import game.algorithms.AlphaBeta;
+import game.algorithms.IHeuristic;
+import game.algorithms.IceHeuristic;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,7 +43,8 @@ public class MyChallenger implements IChallenger {
 
     @Override
     public String bestMove() {
-        AlphaBeta bestMoveComputer = new AlphaBeta(role);
+        IHeuristic heuristic = new IceHeuristic();
+        AlphaBeta bestMoveComputer = new AlphaBeta(role, heuristic);
         return bestMoveComputer.bestMove(gameBoard, role, 3);
     }
 
