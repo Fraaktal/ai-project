@@ -254,9 +254,28 @@ public class Iceboard {
         return null;
     }
 
+    /**
+     * Donne la distance minimale de l'ennemi de role vers l'amas donné.
+     * @param amas
+     * @param role
+     * @return
+     */
     public int getMinEnnemiDistance(ArrayList<Cell> amas, IcebergRole role) {
-        //todo
-        return 0;
+        IcebergRole r = role == IcebergRole.RED?IcebergRole.BLACK:IcebergRole.RED;
+        var pawns = getPawns(r);
+        int distmin = 10;
+
+        for (var pawn:pawns) {
+            for (var iceberg:amas) {
+                int tmp = computeDistance(iceberg, pawn);
+
+                if(tmp < distmin){
+                    distmin = tmp;
+                }
+            }
+        }
+
+        return distmin;
     }
 
     public int computeDistance(Cell pawn, Cell iceberg) {
