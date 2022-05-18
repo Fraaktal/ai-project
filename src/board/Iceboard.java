@@ -137,6 +137,11 @@ public class Iceboard {
         return newBoard;
     }
 
+
+    public ArrayList<Cell> getPawns(IcebergRole role) {
+        return new ArrayList<>(role == IcebergRole.RED ? this.redPawns : this.blackPawns);
+    }
+
     /**
      * Calcule la nouvelle position à partir d'une case et la valide
      *
@@ -208,6 +213,62 @@ public class Iceboard {
         }
 
         return neighbors;
+    }
+
+    public ArrayList<Cell> getNearestIcebergs(Cell pawn) {
+        LinkedList<SimpleImmutableEntry<Cell, Integer>> frontier = new LinkedList<>();
+        frontier.add(new SimpleImmutableEntry<>(pawn, 0));
+        int maxDepth = 0;
+
+        ArrayList<Cell> nearestIcebergs = new ArrayList<>();
+
+        while (!frontier.isEmpty()) {
+            SimpleImmutableEntry<Cell, Integer> current = frontier.removeFirst();
+
+            // On passe au niveau suivant
+            if (current.getValue() > maxDepth)
+                maxDepth = current.getValue();
+
+            if (current.getKey().getState() == CellState.ICEBERG) {
+                nearestIcebergs.add(current.getKey());
+
+                // Trouve les icebergs possibles dans la même profondeur
+                for (var node : frontier) {
+                    if (node.getValue() > current.getValue())
+                        break;
+
+                    if (node.getKey().getState() == CellState.ICEBERG)
+                        nearestIcebergs.add(node.getKey());
+                }
+
+                break;
+            }
+        }
+
+        return nearestIcebergs;
+    }
+
+
+    public ArrayList<Cell> getAmas(Cell iceberg) {
+        //todo récup tout les iceberg collé à cet iceberg
+        return null;
+    }
+
+    public int getMinEnnemiDistance(ArrayList<Cell> amas, IcebergRole role) {
+        //todo
+        return 0;
+    }
+
+    public int computeDistance(Cell pawn, Cell iceberg) {
+        //todo semble ne pas fonctionner
+        int du = iceberg.getPosition().getX() - pawn.getPosition().getX();
+        int dv = (iceberg.getPosition().getY() + iceberg.getPosition().getX() / 2) - (iceberg.getPosition().getY() + pawn.getPosition().getX() / 2);
+        if (((du >= 0 && dv >= 0) || (du < 0 && dv < 0))){
+            return Math.max(Math.abs(du), Math.abs(dv));
+        }
+        else{
+            return Math.abs(du) + Math.abs(dv);
+        }
     }
 
     /**
