@@ -249,19 +249,20 @@ public class Iceboard {
     }
 
 
-    public ArrayList<Cell> getAmas(Cell iceberg) {
+    public HashSet<Cell> getAmas(Cell iceberg) {
         LinkedList<Cell> frontier = new LinkedList<>();
         frontier.add(iceberg);
-        ArrayList<Cell> icebergs = new ArrayList<>();
+        HashSet<Cell> icebergs = new HashSet<Cell>();
+        icebergs.add(iceberg);
 
         while (!frontier.isEmpty()) {
             Cell current = frontier.removeFirst();
-            icebergs.add(current);
 
             var neighbors = getNeighbors(current);
             for (var n:neighbors) {
                 if(n.getState() == CellState.ICEBERG && !icebergs.contains(n)){
                     frontier.add(n);
+                    icebergs.add(n);
                 }
             }
         }
@@ -275,14 +276,14 @@ public class Iceboard {
      * @param role
      * @return
      */
-    public int getMinEnnemiDistance(ArrayList<Cell> amas, IcebergRole role) {
+    public int getMinEnnemiDistance(HashSet<Cell> amas, IcebergRole role) {
         IcebergRole r = role == IcebergRole.RED?IcebergRole.BLACK:IcebergRole.RED;
         var pawns = getPawns(r);
         int distmin = 10;
 
         for (var pawn:pawns) {
             for (var iceberg:amas) {
-                int tmp = computeDistance(iceberg, pawn);
+                int tmp = computeDistance(iceberg.getPosition().getX(),iceberg.getPosition().getY(), pawn.getPosition().getX(), pawn.getPosition().getY());
 
                 if(tmp < distmin){
                     distmin = tmp;
@@ -293,16 +294,31 @@ public class Iceboard {
         return distmin;
     }
 
-    public int computeDistance(Cell pawn, Cell iceberg) {
-        //todo semble ne pas fonctionner
-        int du = iceberg.getPosition().getX() - pawn.getPosition().getX();
-        int dv = (iceberg.getPosition().getY() + iceberg.getPosition().getX() / 2) - (iceberg.getPosition().getY() + pawn.getPosition().getX() / 2);
-        if (((du >= 0 && dv >= 0) || (du < 0 && dv < 0))){
-            return Math.max(Math.abs(du), Math.abs(dv));
+    public int computeDistance(int x1, int y1, int x2, int y2) {
+        int diagXTran = 0;
+        int diagYTran = 0;
+        int distance = 0;
+        if(x1 < x2){diagXTran = 1;}
+        else if (x1 > x2){diagXTran = -1;}
+        else{diagXTran = 0;}
+
+        if(y1 < y2){diagYTran = 1;}
+        else if (y1 > y2){diagYTran = -1;}
+        else{diagYTran = 0;}
+
+        boolean isDiag = diagXTran != 0 && diagYTran != 0;
+
+        while(isDiag){
+            x1+=diagXTran;
+            y1+=diagYTran;
+            isDiag = x1 != x2 && y1 != y2;
+            distance++;
         }
-        else{
-            return Math.abs(du) + Math.abs(dv);
-        }
+
+        distance += Math.abs(x2-x1);
+        distance += Math.abs(y2-y1);
+
+        return distance;
     }
 
     /**

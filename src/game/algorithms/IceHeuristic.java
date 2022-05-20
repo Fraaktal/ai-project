@@ -28,7 +28,7 @@ public class IceHeuristic implements IHeuristic {
             var icebergs = board.getNearestIcebergs(pawn);
             for (var iceberg:icebergs) {
                 var amas = board.getAmas(iceberg);
-                int distanceAmi = board.computeDistance(pawn, iceberg);
+                int distanceAmi = board.computeDistance(pawn.getPosition().getX(), pawn.getPosition().getY(), iceberg.getPosition().getX(), iceberg.getPosition().getY());
                 int distanceEnnemi = board.getMinEnnemiDistance(amas, role);
                 result += computeResult(amas.size(), distanceAmi, distanceEnnemi);
             }

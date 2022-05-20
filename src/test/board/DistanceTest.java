@@ -10,16 +10,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DistanceTest {
     @Test
-    void formatTest() {
+    void DistanceTest() {
         Iceboard board = new Iceboard();
-        int res = board.computeDistance(new Cell(CellState.ICEBERG,new Position(1,1)), new Cell(CellState.ICEBERG,new Position(4,3)));
+        int res = board.computeDistance(1,1,4,3);
         assertEquals(3, res);
-        res = board.computeDistance(new Cell(CellState.ICEBERG,new Position(1,1)), new Cell(CellState.ICEBERG,new Position(1,2)));
+        res = board.computeDistance(1,1,1,2);
         assertEquals(1, res);
-        res = board.computeDistance(new Cell(CellState.ICEBERG,new Position(1,1)), new Cell(CellState.ICEBERG,new Position(2,1)));
+        res = board.computeDistance(1,1,2,1);
         assertEquals(1, res);
 
-        res = board.computeDistance(new Cell(CellState.ICEBERG,new Position(1,1)), new Cell(CellState.ICEBERG,new Position(4,7)));
+        res = board.computeDistance(1,1,4,7);
         assertEquals(6, res);
     }
 }
