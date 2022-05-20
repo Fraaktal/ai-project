@@ -250,8 +250,23 @@ public class Iceboard {
 
 
     public ArrayList<Cell> getAmas(Cell iceberg) {
-        //todo récup tout les iceberg collé à cet iceberg
-        return null;
+        LinkedList<Cell> frontier = new LinkedList<>();
+        frontier.add(iceberg);
+        ArrayList<Cell> icebergs = new ArrayList<>();
+
+        while (!frontier.isEmpty()) {
+            Cell current = frontier.removeFirst();
+            icebergs.add(current);
+
+            var neighbors = getNeighbors(current);
+            for (var n:neighbors) {
+                if(n.getState() == CellState.ICEBERG && !icebergs.contains(n)){
+                    frontier.add(n);
+                }
+            }
+        }
+
+        return icebergs;
     }
 
     /**
