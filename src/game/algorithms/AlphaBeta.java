@@ -31,20 +31,18 @@ public class AlphaBeta {
      * @return Mouvement qui doit être joué
      */
     public String bestMove(Iceboard board, IcebergRole playerRole, int depthMax) {
-        System.out.println("[MiniMax]");
         String bestMove = null;
         int valMax = Integer.MIN_VALUE;
 
         for (var move : board.getPossibleMoves(playerRole)) {
             board.emulateMove(move, playerRole);
             int res = minMax(board,depthMax - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            System.out.println(res);
             if (bestMove == null || res > valMax) {
                 bestMove = move;
                 valMax = res;
             }
         }
-        System.out.println(valMax);
+
         return bestMove;
     }
 

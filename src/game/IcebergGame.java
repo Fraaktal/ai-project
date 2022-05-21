@@ -30,5 +30,36 @@ public class IcebergGame {
         System.out.print(challenger.defeat());
         System.out.print("\n");
         System.out.print(challenger.tie());
+
+        System.out.print("\n--------------------\n");
+        challenger = new MyChallenger();
+        challenger.setRole("RED");
+        System.out.print("\nPossible moves RED :\n");
+        System.out.print(challenger.possibleMoves("RED"));
+        System.out.print(challenger.boardToString());
+        var move = challenger.bestMove();
+        System.out.print("\nbest move RED :\n");
+        System.out.print(move);
+
+        System.out.print(challenger.boardToString());
+        System.out.print("\nPossible moves RED :\n");
+        System.out.print(challenger.possibleMoves("RED"));
+        challenger.iPlay(move);
+
+        System.out.print(challenger.boardToString());
+
+        challenger.otherPlay("A5-A4");
+
+        System.out.print("\nPossible moves RED :\n");
+        System.out.print(challenger.possibleMoves("RED"));
+        move = challenger.bestMove();
+        System.out.print("\nbest move RED :\n");
+        System.out.print(move);
+        System.out.print("\nPossible moves RED :\n");
+        System.out.print(challenger.possibleMoves("RED"));
+        challenger.iPlay(move);
+
+
+
     }
 }

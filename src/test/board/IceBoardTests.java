@@ -109,6 +109,17 @@ class IceboardTests {
     }
 
     @Test
+    void getPossibleMoves6Test() {
+        Iceboard iceboard = new Iceboard();
+        iceboard.load(getClass().getResourceAsStream("/resource/plateau6.txt"));
+
+        Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);
+        Set<String> expectedMoves = new HashSet<>(Arrays.asList("A2-A3", "A2-B3", "A2-B2", "E9-F8", "E9-E8", "E9-D8", "I1-I2", "I1-H1", "I1-H2"));
+        assertTrue(possibleMoves.containsAll(expectedMoves));
+        assertEquals(possibleMoves.size(), expectedMoves.size());
+    }
+
+    @Test
     void moveTest() {
         Iceboard iceboard = new Iceboard();
         Set<String> possibleMoves = iceboard.getPossibleMoves(IcebergRole.RED);

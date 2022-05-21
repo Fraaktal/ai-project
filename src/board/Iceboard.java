@@ -79,12 +79,14 @@ public class Iceboard {
         initializeBoard();
     }
 
-    private Iceboard(Iceboard iceboard) {
-        this.redScore = iceboard.redScore;
-        this.blackScore = iceboard.blackScore;
-        this.redPawns = iceboard.redPawns;
-        this.blackPawns = iceboard.blackPawns;
-        this.gameBoard = iceboard.gameBoard;
+    private Iceboard copy(Iceboard iceboard) {
+        Iceboard result = new Iceboard();
+        result.redScore = iceboard.redScore;
+        result.blackScore = iceboard.blackScore;
+        result.redPawns = iceboard.redPawns;
+        result.blackPawns = iceboard.blackPawns;
+        result.gameBoard = iceboard.gameBoard.clone();
+        return result;
     }
 
     /**
@@ -132,7 +134,7 @@ public class Iceboard {
     }
 
     public Iceboard emulateMove(String move, IcebergRole role){
-        Iceboard newBoard = new Iceboard(this);
+        Iceboard newBoard = copy(this);
         newBoard.playMove(move, role);
         return newBoard;
     }
