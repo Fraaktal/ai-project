@@ -21,6 +21,16 @@ public class Cell {
         this.position = coordinates;
     }
 
+    /**
+     * Constructeur de copie
+     *
+     * @param cell Case du plateau à copier
+     */
+    public Cell(Cell cell) {
+        this.state = cell.getState();
+        this.position = new Position(cell.getPosition());
+    }
+
     public CellState getState() {
         return state;
     }
