@@ -36,19 +36,25 @@ public class IcebergGame {
         challenger.setRole("RED");
         System.out.print("\nPossible moves RED :\n");
         System.out.print(challenger.possibleMoves("RED"));
+        System.out.print("\n");
         System.out.print(challenger.boardToString());
         var move = challenger.bestMove();
         System.out.print("\nbest move RED :\n");
         System.out.print(move);
+        System.out.print("\n");
 
         System.out.print(challenger.boardToString());
         System.out.print("\nPossible moves RED :\n");
         System.out.print(challenger.possibleMoves("RED"));
         challenger.iPlay(move);
+        System.out.print("\n");
 
         System.out.print(challenger.boardToString());
 
         challenger.otherPlay("A5-A4");
+
+        System.out.print("\n");
+        System.out.print(challenger.boardToString());
 
         System.out.print("\nPossible moves RED :\n");
         System.out.print(challenger.possibleMoves("RED"));

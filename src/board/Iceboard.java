@@ -83,12 +83,23 @@ public class Iceboard {
         Iceboard result = new Iceboard();
         result.redScore = iceboard.redScore;
         result.blackScore = iceboard.blackScore;
-        result.redPawns = iceboard.redPawns;
-        result.blackPawns = iceboard.blackPawns;
+
+        result.redPawns = copyPawns(new ArrayList<>(iceboard.redPawns));
+        result.blackPawns = copyPawns(new ArrayList<>(iceboard.blackPawns));
+
         result.gameBoard = new Cell[SIZE][SIZE];
 
         for(int i=0;i<SIZE;i++){
             System.arraycopy(iceboard.gameBoard[i], 0, result.gameBoard[i], 0, SIZE);
+        }
+
+        return result;
+    }
+
+    private ArrayList<Cell> copyPawns(ArrayList<Cell> cells) {
+        ArrayList<Cell> result = new ArrayList<>();
+        for (var cell:cells) {
+            result.add(new Cell(cell));
         }
 
         return result;
@@ -130,12 +141,25 @@ public class Iceboard {
                 blackScore++;
         }
 
-        gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()] = originCell;
-        // Mise à jour des coordonnées des pions
-        originCell.getPosition().setX(iceMove.getDestination().getX());
-        originCell.getPosition().setY(iceMove.getDestination().getY());
+        if(role == IcebergRole.RED){
+            for (var p:redPawns) {
+                if(p.getPosition().equals(iceMove.getOrigin())){
+                    p.getPosition().setX(iceMove.getDestination().getX());
+                    p.getPosition().setY(iceMove.getDestination().getY());
+                }
+            }
+        }
+        else{
+            for (var p:blackPawns) {
+                if(p.getPosition().equals(iceMove.getOrigin())){
+                    p.getPosition().setX(iceMove.getDestination().getX());
+                    p.getPosition().setY(iceMove.getDestination().getY());
+                }
+            }
+        }
 
         gameBoard[iceMove.getOrigin().getX()][iceMove.getOrigin().getY()] = new Cell(CellState.EMPTY, iceMove.getOrigin());
+        gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()] = new Cell(originCell.getState(), iceMove.getDestination());
     }
 
     public Iceboard emulateMove(String move, IcebergRole role){
