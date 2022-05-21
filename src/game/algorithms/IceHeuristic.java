@@ -3,8 +3,6 @@ package game.algorithms;
 import board.Iceboard;
 import game.IcebergRole;
 
-import java.security.KeyPair;
-
 // TODO
 public class IceHeuristic implements IHeuristic {
     public IceHeuristic() {}
@@ -27,39 +25,39 @@ public class IceHeuristic implements IHeuristic {
         for (var pawn:pawns) {
             var icebergs = board.getNearestIcebergs(pawn);
             for (var iceberg:icebergs) {
-                var amas = board.getAmas(iceberg);
+                var heap = board.getHeap(iceberg);
                 int distanceAmi = board.computeDistance(pawn.getPosition().getX(), pawn.getPosition().getY(), iceberg.getPosition().getX(), iceberg.getPosition().getY());
-                int distanceEnnemi = board.getMinEnnemiDistance(amas, role);
-                result += computeResult(amas.size(), distanceAmi, distanceEnnemi);
+                int distanceEnnemi = board.getMinEnnemiDistance(heap, role);
+                result += computeResult(heap.size(), distanceAmi, distanceEnnemi);
             }
         }
         return result;
     }
 
-    private int computeResult(int amas, int distanceAmi, int distanceEnnemi){
+    private int computeResult(int heap, int distanceAmi, int distanceEnnemi){
         int amiScore = 0;
         int ennemiScore = 0;
-        while(amas > 0){
+        while (heap > 0){
             //on commence par ennemi (on vient de jouer)
-            if(distanceEnnemi == 1){
-                amas--;
+            if (distanceEnnemi == 1){
+                heap--;
                 ennemiScore++;
             }
-            else{
+            else {
                 distanceEnnemi--;
             }
 
-            if(amas>0){
-                if(distanceAmi == 1){
-                    amas--;
+            if (heap>0) {
+                if (distanceAmi == 1) {
+                    heap--;
                     amiScore++;
                 }
-                else{
+                else {
                     distanceAmi--;
                 }
             }
         }
 
-        return amiScore-ennemiScore;
+        return amiScore - ennemiScore;
     }
 }

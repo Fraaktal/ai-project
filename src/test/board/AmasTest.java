@@ -12,7 +12,7 @@ public class AmasTest {
     @Test
     void AmasTest_1() {
         Iceboard board = new Iceboard();
-        var res = board.getAmas(new Cell(CellState.ICEBERG, new Position(3,3)));
+        var res = board.getHeap(new Cell(CellState.ICEBERG, new Position(3,3)));
         assertEquals(55, res.size());
     }
 }

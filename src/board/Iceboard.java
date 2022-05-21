@@ -137,7 +137,12 @@ public class Iceboard {
         return newBoard;
     }
 
-
+    /**
+     * Obtient les cases des bâteaux d'un joueur donné
+     *
+     * @param role Rôle du joueur
+     * @return Liste des références des bâteaux
+     */
     public ArrayList<Cell> getPawns(IcebergRole role) {
         return new ArrayList<>(role == IcebergRole.RED ? this.redPawns : this.blackPawns);
     }
@@ -248,19 +253,28 @@ public class Iceboard {
         return nearestIcebergs;
     }
 
-
-    public HashSet<Cell> getAmas(Cell iceberg) {
+    /**
+     * Récupère les icebergs autour d'un iceberg donné
+     * qui forme un ensemble
+     * pour le calcul de l'héuristique
+     *
+     * @param iceberg Case contenant un iceberg
+     * @return Liste des icebergs proches
+     */
+    public HashSet<Cell> getHeap(Cell iceberg) {
+        // BFS
         LinkedList<Cell> frontier = new LinkedList<>();
         frontier.add(iceberg);
-        HashSet<Cell> icebergs = new HashSet<Cell>();
+        HashSet<Cell> icebergs = new HashSet<>();
         icebergs.add(iceberg);
 
         while (!frontier.isEmpty()) {
             Cell current = frontier.removeFirst();
 
             var neighbors = getNeighbors(current);
-            for (var n:neighbors) {
-                if(n.getState() == CellState.ICEBERG && !icebergs.contains(n)){
+
+            for (var n : neighbors) {
+                if (n.getState() == CellState.ICEBERG && !icebergs.contains(n)) {
                     frontier.add(n);
                     icebergs.add(n);
                 }
@@ -271,29 +285,40 @@ public class Iceboard {
     }
 
     /**
-     * Donne la distance minimale de l'ennemi de role vers l'amas donné.
-     * @param amas
-     * @param role
+     * Donne la distance minimale de l'ennemi de role vers un amas donné.
+     *
+     * @param heap Amas d'icebergs
+     * @param role Rôle du joueur
      * @return
      */
-    public int getMinEnnemiDistance(HashSet<Cell> amas, IcebergRole role) {
-        IcebergRole r = role == IcebergRole.RED?IcebergRole.BLACK:IcebergRole.RED;
+    public int getMinEnnemiDistance(HashSet<Cell> heap, IcebergRole role) {
+        IcebergRole r = role == IcebergRole.RED ? IcebergRole.BLACK : IcebergRole.RED;
         var pawns = getPawns(r);
-        int distmin = 10;
+        int distMin = 10;
 
-        for (var pawn:pawns) {
-            for (var iceberg:amas) {
+        for (var pawn : pawns) {
+            for (var iceberg : heap) {
                 int tmp = computeDistance(iceberg.getPosition().getX(),iceberg.getPosition().getY(), pawn.getPosition().getX(), pawn.getPosition().getY());
 
-                if(tmp < distmin){
-                    distmin = tmp;
+                if (tmp < distMin) {
+                    distMin = tmp;
                 }
             }
         }
 
-        return distmin;
+        return distMin;
     }
 
+    /**
+     * Calcule la distance entre deux cases du plateau
+     * TODO: Use Position (copy constructor)
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return
+     */
     public int computeDistance(int x1, int y1, int x2, int y2) {
         int diagXTran = 0;
         int diagYTran = 0;
