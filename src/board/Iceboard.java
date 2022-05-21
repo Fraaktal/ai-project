@@ -85,7 +85,12 @@ public class Iceboard {
         result.blackScore = iceboard.blackScore;
         result.redPawns = iceboard.redPawns;
         result.blackPawns = iceboard.blackPawns;
-        result.gameBoard = iceboard.gameBoard.clone();
+        result.gameBoard = new Cell[SIZE][SIZE];
+
+        for(int i=0;i<SIZE;i++){
+            System.arraycopy(iceboard.gameBoard[i], 0, result.gameBoard[i], 0, SIZE);
+        }
+
         return result;
     }
 
