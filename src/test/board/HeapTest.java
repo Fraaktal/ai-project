@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AmasTest {
+public class HeapTest {
     @Test
-    void AmasTest_1() {
+    void HeapAtInitTest() {
         Iceboard board = new Iceboard();
         var res = board.getHeap(new Cell(CellState.ICEBERG, new Position(3,3)));
         assertEquals(55, res.size());
