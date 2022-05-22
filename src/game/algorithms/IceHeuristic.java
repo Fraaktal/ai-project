@@ -17,6 +17,13 @@ public class IceHeuristic implements IHeuristic {
         var boats = board.getBoats(role);
         int result = 0;
 
+        if(board.getEnnemyScore(role) == 28){
+            return Integer.MIN_VALUE;
+        }
+        else if (board.getScore(role) == 28){
+            return Integer.MAX_VALUE;
+        }
+
         for (var boat : boats) {
             var icebergs = board.getNearestIcebergs(boat);
 

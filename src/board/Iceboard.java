@@ -585,4 +585,18 @@ public class Iceboard {
     public boolean isGameOver() {
         return redScore >= 28 || blackScore >= 28;
     }
+
+    public int getScore(IcebergRole role) {
+        if(role == IcebergRole.RED){
+            return redScore;
+        }
+        return blackScore;
+    }
+
+    public int getEnnemyScore(IcebergRole role) {
+        if(role == IcebergRole.RED){
+            return blackScore;
+        }
+        return redScore;
+    }
 }
