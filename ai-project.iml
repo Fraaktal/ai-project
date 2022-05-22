@@ -36,7 +36,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../devoir-2022-main/src/main/resources/commons-cli-1.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/resource/commons-cli-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
