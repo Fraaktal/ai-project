@@ -8,13 +8,18 @@ import game.IcebergRole;
  * utilisant Alpha Bêta pour couper les branches non pertinentes
  */
 public class AlphaBeta {
+    private static final int winRes = 28;
 
     /** Joueur à maximiser, le nôtre */
     IcebergRole playerMaxRole;
     /** Joueur à minimiser, l'adversaire */
     IcebergRole playerMinRole;
-    /** Heuristic to apply */
+    /** L'heuristique à appliquer */
     IHeuristic heuristic;
+
+    private static final int TIME_LIMIT_MS = 480000;
+
+    private static boolean searchAborted = false;
 
     public AlphaBeta(IcebergRole role, IHeuristic heuristic) {
         this.playerMaxRole = role;
@@ -34,9 +39,35 @@ public class AlphaBeta {
         String bestMove = null;
         int valMax = Integer.MIN_VALUE;
 
-        for (var move : board.getPossibleMoves(playerRole)) {
+        var moves = board.getPossibleMoves(playerRole);
+
+        for (var move : moves) {
             board.emulateMove(move, playerRole);
+
             int res = minMax(board,depthMax - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            if (bestMove == null || res > valMax) {
+                bestMove = move;
+                valMax = res;
+            }
+        }
+
+        return bestMove;
+    }
+
+    public String bestMoveID(Iceboard board, IcebergRole playerRole) {
+        String bestMove = null;
+        int valMax = Integer.MIN_VALUE;
+
+        var moves = board.getPossibleMoves(playerRole);
+
+        for (var move : moves) {
+            // TODO: Use another object other than board itself?
+            board.emulateMove(move, playerRole);
+
+            long computeTimeLimit = ((TIME_LIMIT_MS - 1000)) / (moves.size());
+
+            int res = computeID(board, computeTimeLimit);
+
             if (bestMove == null || res > valMax) {
                 bestMove = move;
                 valMax = res;
@@ -78,5 +109,82 @@ public class AlphaBeta {
         }
 
         return beta;
+    }
+
+    private void checkTimeElapsed(long timeStart, long timeLimit) {
+        long timeCurrent = System.currentTimeMillis();
+        long timeElapsed = (timeCurrent - timeStart);
+
+        if (timeElapsed >= timeLimit)
+            searchAborted = true;
+    }
+
+    private int maxMinIt(Iceboard board, int depth, int alpha, int beta, long timeStart, long timeLimit) {
+        int res = this.heuristic.evaluate(board, this.playerMaxRole);
+        checkTimeElapsed(timeStart, timeLimit);
+
+        if (searchAborted || depth == 0 || board.isGameOver())
+            return res;
+
+        for (var move : board.getPossibleMoves(this.playerMaxRole)) {
+            var b = board.emulateMove(move, this.playerMaxRole);
+
+            alpha = Math.max(alpha, minMaxIt(b, depth - 1, alpha, beta, timeStart, timeLimit));
+
+            if (alpha >= beta)
+                return beta;
+        }
+
+        return alpha;
+    }
+
+    private int minMaxIt(Iceboard board, int depth, int alpha, int beta, long timeStart, long timeLimit) {
+        int res = this.heuristic.evaluate(board, this.playerMinRole);
+        checkTimeElapsed(timeStart, timeLimit);
+
+        if (searchAborted || depth == 0 || board.isGameOver())
+            return res;
+
+        for (var move : board.getPossibleMoves(this.playerMinRole)) {
+            var b = board.emulateMove(move, this.playerMinRole);
+
+            beta = Math.min(beta, maxMinIt(b, depth - 1, alpha, beta, timeStart, timeLimit));
+
+            if (alpha >= beta)
+                return alpha;
+        }
+
+        return beta;
+    }
+
+    private int computeID(Iceboard board, long timeLimit) {
+        long timeStart = System.currentTimeMillis();
+        long timeEnd = timeStart + timeLimit;
+
+        int depth = 1;
+        int res = 0;
+
+        searchAborted = false;
+
+        while (true) {
+            long timeCurrent = System.currentTimeMillis();
+
+            if (timeCurrent >= timeEnd)
+                break;
+
+            // TODO: Call minMax function
+            int itRes = minMax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+            // TODO: Arrêter de chercher quand on trouve un mouvement gagnant
+            if (itRes >= winRes)
+                return itRes;
+
+            if (!searchAborted)
+                res = itRes;
+
+            depth++;
+        }
+
+        return res;
     }
 }

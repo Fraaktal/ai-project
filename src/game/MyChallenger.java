@@ -45,7 +45,7 @@ public class MyChallenger implements IChallenger {
     public String bestMove() {
         IHeuristic heuristic = new IceHeuristic();
         AlphaBeta bestMoveComputer = new AlphaBeta(role, heuristic);
-        return bestMoveComputer.bestMove(gameBoard, role, 3);
+        return bestMoveComputer.bestMoveID(gameBoard, role); // TODO: Temporaire ?
     }
 
     @Override
