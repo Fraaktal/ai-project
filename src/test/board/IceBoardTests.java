@@ -3,7 +3,6 @@ package test.board;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import board.Cell;
 import board.CellState;
 import board.Iceboard;
 
@@ -126,12 +125,10 @@ class IceboardTests {
         String move = possibleMoves.iterator().next();
         IceMove iceMove = new IceMove(move);
         iceboard.playMove(move, IcebergRole.RED);
-        Cell moved = iceboard.getCellAt(iceMove.getDestination());
-        Cell origin = iceboard.getCellAt(iceMove.getOrigin());
+        CellState moved = iceboard.getCellAt(iceMove.getDestination());
+        CellState origin = iceboard.getCellAt(iceMove.getOrigin());
 
-        assertEquals(iceMove.getDestination().toString(), moved.getPosition().toString());
-        assertEquals(CellState.RED, moved.getState());
-        assertEquals(iceMove.getOrigin().toString(), origin.getPosition().toString());
-        assertEquals(CellState.EMPTY, origin.getState());
+        assertEquals(CellState.RED, moved);
+        assertEquals(CellState.EMPTY, origin);
     }
 }

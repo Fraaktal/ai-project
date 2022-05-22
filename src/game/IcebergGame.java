@@ -1,16 +1,19 @@
 package game;
 
+/**
+ * Simulate a game
+ */
 public class IcebergGame {
     public static void main(String[] args) {
         MyChallenger challenger = new MyChallenger();
         System.out.print(challenger.teamName());
         System.out.print("\n");
         System.out.print(challenger.boardToString());
-        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau.txt");
-        System.out.print(challenger.boardToString());
-        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau2.txt");
-        System.out.print(challenger.boardToString());
-        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\init.txt");
+//        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau.txt");
+//        System.out.print(challenger.boardToString());
+//        challenger.setBoardFromFile("C:\\Users\\trava\\OneDrive\\Bureau\\Polytech\\IA\\plateau2.txt");
+//        System.out.print(challenger.boardToString());
+        challenger.setBoardFromFile("/home/sofi/Documents/school/year3/AI/project/ai-project/src/resource/plateau_init.txt");
         System.out.print(challenger.boardToString());
         challenger.setRole("RED");
 
