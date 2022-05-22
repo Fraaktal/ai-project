@@ -17,7 +17,7 @@ public class AlphaBeta {
     /** L'heuristique à appliquer */
     IHeuristic heuristic;
 
-    private static final int TIME_LIMIT_MS = 480000;
+    private static final int TIME_LIMIT_MS = 5000;
 
     private static boolean searchAborted = false;
 
@@ -64,7 +64,7 @@ public class AlphaBeta {
             // TODO: Use another object other than board itself?
             board.emulateMove(move, playerRole);
 
-            long computeTimeLimit = ((TIME_LIMIT_MS - 1000)) / (moves.size());
+            long computeTimeLimit = (TIME_LIMIT_MS - 1000) / (moves.size());
 
             int res = computeID(board, computeTimeLimit);
 
@@ -120,16 +120,15 @@ public class AlphaBeta {
     }
 
     private int maxMinIt(Iceboard board, int depth, int alpha, int beta, long timeStart, long timeLimit) {
-        int res = this.heuristic.evaluate(board, this.playerMaxRole);
         checkTimeElapsed(timeStart, timeLimit);
 
         if (searchAborted || depth == 0 || board.isGameOver())
-            return res;
+            return this.heuristic.evaluate(board, this.playerMaxRole);
 
         for (var move : board.getPossibleMoves(this.playerMaxRole)) {
-            var b = board.emulateMove(move, this.playerMaxRole);
+            var childBoard = board.emulateMove(move, this.playerMaxRole);
 
-            alpha = Math.max(alpha, minMaxIt(b, depth - 1, alpha, beta, timeStart, timeLimit));
+            alpha = Math.max(alpha, minMaxIt(childBoard, depth - 1, alpha, beta, timeStart, timeLimit));
 
             if (alpha >= beta)
                 return beta;
@@ -139,11 +138,10 @@ public class AlphaBeta {
     }
 
     private int minMaxIt(Iceboard board, int depth, int alpha, int beta, long timeStart, long timeLimit) {
-        int res = this.heuristic.evaluate(board, this.playerMinRole);
         checkTimeElapsed(timeStart, timeLimit);
 
         if (searchAborted || depth == 0 || board.isGameOver())
-            return res;
+            return this.heuristic.evaluate(board, this.playerMinRole);
 
         for (var move : board.getPossibleMoves(this.playerMinRole)) {
             var b = board.emulateMove(move, this.playerMinRole);
@@ -172,10 +170,8 @@ public class AlphaBeta {
             if (timeCurrent >= timeEnd)
                 break;
 
-            // TODO: Call minMax function
-            int itRes = minMax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            int itRes = minMaxIt(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, timeCurrent, timeEnd - timeCurrent);
 
-            // TODO: Arrêter de chercher quand on trouve un mouvement gagnant
             if (itRes >= winRes)
                 return itRes;
 
