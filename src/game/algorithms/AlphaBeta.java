@@ -17,7 +17,7 @@ public class AlphaBeta {
     /** L'heuristique à appliquer */
     IHeuristic heuristic;
 
-    private static final int TIME_LIMIT_MS = 5000;
+    private static final int TIME_LIMIT_MS = 480000/61;
 
     private static boolean searchAborted = false;
 
