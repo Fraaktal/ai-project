@@ -20,14 +20,14 @@ public class IceHeuristic implements IHeuristic {
         retourner result.
         */
 
-        var pawns = board.getPawns(role);
+        var pawns = board.getBoats(role);
         int result = 0;
         for (var pawn:pawns) {
             var icebergs = board.getNearestIcebergs(pawn);
-            for (var iceberg:icebergs) {
+            for (var iceberg : icebergs) {
                 var heap = board.getHeap(iceberg);
-                int distanceAmi = board.computeDistance(pawn.getPosition().getX(), pawn.getPosition().getY(), iceberg.getPosition().getX(), iceberg.getPosition().getY());
-                int distanceEnnemi = board.getMinEnnemiDistance(heap, role);
+                int distanceAmi = board.computeDistance(pawn.getX(), pawn.getY(), iceberg.getX(), iceberg.getY());
+                int distanceEnnemi = board.getMinEnemyDistance(heap, role);
                 result += computeResult(heap.size(), distanceAmi, distanceEnnemi);
             }
         }

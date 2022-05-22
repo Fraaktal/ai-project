@@ -1,7 +1,5 @@
 package test.board;
 
-import board.Cell;
-import board.CellState;
 import board.Iceboard;
 import board.Position;
 import org.junit.jupiter.api.Test;
@@ -12,7 +10,7 @@ public class HeapTest {
     @Test
     void HeapAtInitTest() {
         Iceboard board = new Iceboard();
-        var res = board.getHeap(new Cell(CellState.ICEBERG, new Position(3,3)));
+        var res = board.getHeap(new Position(3,3));
         assertEquals(55, res.size());
     }
 }

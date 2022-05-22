@@ -53,15 +53,15 @@ public class Iceboard {
     /**
      * Cases du joueur rouge
      */
-    private ArrayList<Cell> redPawns;
+    private ArrayList<Position> redBoats;
     /**
      * Cases du joueur noir
      */
-    private ArrayList<Cell> blackPawns;
+    private ArrayList<Position> blackBoats;
     /**
      * Plateau du jeu
      */
-    private Cell[][] gameBoard;
+    private CellState[][] gameBoard;
     /**
      * Scores des joueurs
      */
@@ -74,35 +74,25 @@ public class Iceboard {
         this.redScore = 0;
         this.blackScore = 0;
 
-        this.redPawns = new ArrayList<>();
-        this.blackPawns = new ArrayList<>();
+        this.redBoats = new ArrayList<>();
+        this.blackBoats = new ArrayList<>();
         initializeBoard();
     }
 
-    private Iceboard copy(Iceboard iceboard) {
-        Iceboard result = new Iceboard();
-        result.redScore = iceboard.redScore;
-        result.blackScore = iceboard.blackScore;
+    /**
+     * Constructeur de copie
+     *
+     * @param iceboard Etat du plateau à copier
+     */
+    private Iceboard(Iceboard iceboard) {
+        this.redScore = iceboard.redScore;
+        this.blackScore = iceboard.blackScore;
 
-        result.redPawns = copyPawns(new ArrayList<>(iceboard.redPawns));
-        result.blackPawns = copyPawns(new ArrayList<>(iceboard.blackPawns));
+        this.redBoats = (ArrayList<Position>) iceboard.redBoats.stream().map(Position::new).collect(toList());
+        this.blackBoats = (ArrayList<Position>) iceboard.blackBoats.stream().map(Position::new).collect(toList());
 
-        result.gameBoard = new Cell[SIZE][SIZE];
-
-        for(int i=0;i<SIZE;i++){
-            System.arraycopy(iceboard.gameBoard[i], 0, result.gameBoard[i], 0, SIZE);
-        }
-
-        return result;
-    }
-
-    private ArrayList<Cell> copyPawns(ArrayList<Cell> cells) {
-        ArrayList<Cell> result = new ArrayList<>();
-        for (var cell:cells) {
-            result.add(new Cell(cell));
-        }
-
-        return result;
+        this.gameBoard = new CellState[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) { System.arraycopy(iceboard.gameBoard[i], 0, this.gameBoard[i], 0, SIZE); }
     }
 
     /**
@@ -118,8 +108,7 @@ public class Iceboard {
      * @param p Coordonnées
      * @return Case correspondante
      */
-    public Cell getCellAt(Position p) {
-        // TODO: Verification (out of bounds)
+    public CellState getCellAt(Position p) {
         return this.gameBoard[p.getX()][p.getY()];
     }
 
@@ -134,32 +123,32 @@ public class Iceboard {
         var originCell = gameBoard[iceMove.getOrigin().getX()][iceMove.getOrigin().getY()];
         var destinationCell = gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()];
 
-        if (destinationCell.getState() == CellState.ICEBERG) {
+        if (destinationCell == CellState.ICEBERG) {
             if (role == IcebergRole.RED)
                 redScore++;
             else
                 blackScore++;
         }
 
-        if(role == IcebergRole.RED){
-            for (var p:redPawns) {
-                if(p.getPosition().equals(iceMove.getOrigin())){
-                    p.getPosition().setX(iceMove.getDestination().getX());
-                    p.getPosition().setY(iceMove.getDestination().getY());
+        if (role == IcebergRole.RED){
+            for (var p : redBoats) {
+                if(p.equals(iceMove.getOrigin())){
+                    p.setX(iceMove.getDestination().getX());
+                    p.setY(iceMove.getDestination().getY());
                 }
             }
         }
-        else{
-            for (var p:blackPawns) {
-                if(p.getPosition().equals(iceMove.getOrigin())){
-                    p.getPosition().setX(iceMove.getDestination().getX());
-                    p.getPosition().setY(iceMove.getDestination().getY());
+        else {
+            for (var p : blackBoats) {
+                if(p.equals(iceMove.getOrigin())){
+                    p.setX(iceMove.getDestination().getX());
+                    p.setY(iceMove.getDestination().getY());
                 }
             }
         }
 
-        gameBoard[iceMove.getOrigin().getX()][iceMove.getOrigin().getY()] = new Cell(CellState.EMPTY, iceMove.getOrigin());
-        gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()] = new Cell(originCell.getState(), iceMove.getDestination());
+        gameBoard[iceMove.getOrigin().getX()][iceMove.getOrigin().getY()] = CellState.EMPTY;
+        gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()] = originCell;
     }
 
     /**
@@ -169,8 +158,8 @@ public class Iceboard {
      * @param role Rôle du joueur qui joue actuellement
      * @return Nouveau plateau
      */
-    public Iceboard emulateMove(String move, IcebergRole role){
-        Iceboard newBoard = copy(this);
+    public Iceboard emulateMove(String move, IcebergRole role) {
+        Iceboard newBoard = new Iceboard(this);
         newBoard.playMove(move, role);
         return newBoard;
     }
@@ -181,8 +170,8 @@ public class Iceboard {
      * @param role Rôle du joueur
      * @return Liste des références des bâteaux
      */
-    public ArrayList<Cell> getPawns(IcebergRole role) {
-        return new ArrayList<>(role == IcebergRole.RED ? this.redPawns : this.blackPawns);
+    public ArrayList<Position> getBoats(IcebergRole role) {
+        return new ArrayList<>(role == IcebergRole.RED ? this.redBoats : this.blackBoats);
     }
 
     /**
@@ -203,22 +192,22 @@ public class Iceboard {
      *
      * @param current Coordonnées de la case actuelle
      * @param direction Vecteur de direction pour obtenir le voisin
-     * @return Case voisine si valide, null sinon
+     * @return Coordonnées de la case voisine si valide, null sinon
      */
-    private Cell getNeighbor(Position current, Position direction) {
+    private Position getNeighbor(Position current, Position direction) {
         Position neighborPosition = getNeighborPosition(current, direction);
 
         if (neighborPosition == null) return null;
 
-        Cell neighbor = this.gameBoard[neighborPosition.getX()][neighborPosition.getY()];
+        CellState neighborState = this.gameBoard[neighborPosition.getX()][neighborPosition.getY()];
 
-        if (neighbor == null
-                || neighbor.getState() == CellState.UNDEFINED
-                || neighbor.getState() == CellState.RED
-                || neighbor.getState() == CellState.BLACK)
+        if (neighborState == null
+                || neighborState == CellState.UNDEFINED
+                || neighborState == CellState.RED
+                || neighborState == CellState.BLACK)
             return null;
 
-        return neighbor;
+        return neighborPosition;
     }
 
     /**
@@ -227,28 +216,27 @@ public class Iceboard {
      * @param current Case
      * @return Liste des cases voisines
      */
-    private ArrayList<Cell> getNeighbors(Cell current) {
-        Position position = current.getPosition();
+    private ArrayList<Position> getNeighbors(Position current) {
         int midRow = SIZE / 2;
-        ArrayList<Cell> neighbors = new ArrayList<>();
+        ArrayList<Position> neighbors = new ArrayList<>();
 
-        if (position.getX() < midRow) {
+        if (current.getX() < midRow) {
             for (var d : DIRECTIONS_TOP) {
-                Cell neighbor = this.getNeighbor(position, d);
+                Position neighbor = this.getNeighbor(current, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
             }
-        } else if (position.getX() == midRow) {
+        } else if (current.getX() == midRow) {
             for (var d : DIRECTIONS_MID) {
-                Cell neighbor = this.getNeighbor(position, d);
+                Position neighbor = this.getNeighbor(current, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
             }
         } else {
             for (var d : DIRECTIONS_DOWN) {
-                Cell neighbor = this.getNeighbor(position, d);
+                Position neighbor = this.getNeighbor(current, d);
 
                 if (neighbor != null)
                     neighbors.add(neighbor);
@@ -258,21 +246,21 @@ public class Iceboard {
         return neighbors;
     }
 
-    public ArrayList<Cell> getNearestIcebergs(Cell pawn) {
-        LinkedList<SimpleImmutableEntry<Cell, Integer>> frontier = new LinkedList<>();
-        frontier.add(new SimpleImmutableEntry<>(pawn, 0));
+    public ArrayList<Position> getNearestIcebergs(Position boat) {
+        LinkedList<SimpleImmutableEntry<Position, Integer>> frontier = new LinkedList<>();
+        frontier.add(new SimpleImmutableEntry<>(boat, 0));
         int maxDepth = 0;
 
-        ArrayList<Cell> nearestIcebergs = new ArrayList<>();
+        ArrayList<Position> nearestIcebergs = new ArrayList<>();
 
         while (!frontier.isEmpty()) {
-            SimpleImmutableEntry<Cell, Integer> current = frontier.removeFirst();
+            SimpleImmutableEntry<Position, Integer> current = frontier.removeFirst();
 
             // On passe au niveau suivant
             if (current.getValue() > maxDepth)
                 maxDepth = current.getValue();
 
-            if (current.getKey().getState() == CellState.ICEBERG) {
+            if (this.gameBoard[current.getKey().getX()][current.getKey().getY()] == CellState.ICEBERG) {
                 nearestIcebergs.add(current.getKey());
 
                 // Trouve les icebergs possibles dans la même profondeur
@@ -280,7 +268,7 @@ public class Iceboard {
                     if (node.getValue() > current.getValue())
                         break;
 
-                    if (node.getKey().getState() == CellState.ICEBERG)
+                    if (this.gameBoard[node.getKey().getX()][node.getKey().getY()]  == CellState.ICEBERG)
                         nearestIcebergs.add(node.getKey());
                 }
 
@@ -299,20 +287,21 @@ public class Iceboard {
      * @param iceberg Case contenant un iceberg
      * @return Liste des icebergs proches
      */
-    public HashSet<Cell> getHeap(Cell iceberg) {
+    public HashSet<Position> getHeap(Position iceberg) {
         // BFS
-        LinkedList<Cell> frontier = new LinkedList<>();
+        LinkedList<Position> frontier = new LinkedList<>();
         frontier.add(iceberg);
-        HashSet<Cell> icebergs = new HashSet<>();
+        HashSet<Position> icebergs = new HashSet<>();
         icebergs.add(iceberg);
 
         while (!frontier.isEmpty()) {
-            Cell current = frontier.removeFirst();
+            Position current = frontier.removeFirst();
 
             var neighbors = getNeighbors(current);
 
             for (var n : neighbors) {
-                if (n.getState() == CellState.ICEBERG && !icebergs.contains(n)) {
+                // Check in board directly
+                if (this.gameBoard[n.getX()][n.getY()] == CellState.ICEBERG && !icebergs.contains(n)) {
                     frontier.add(n);
                     icebergs.add(n);
                 }
@@ -329,18 +318,17 @@ public class Iceboard {
      * @param role Rôle du joueur
      * @return
      */
-    public int getMinEnnemiDistance(HashSet<Cell> heap, IcebergRole role) {
+    public int getMinEnemyDistance(HashSet<Position> heap, IcebergRole role) {
         IcebergRole r = role == IcebergRole.RED ? IcebergRole.BLACK : IcebergRole.RED;
-        var pawns = getPawns(r);
+        var boats = getBoats(r);
         int distMin = 10;
 
-        for (var pawn : pawns) {
+        for (var boat : boats) {
             for (var iceberg : heap) {
-                int tmp = computeDistance(iceberg.getPosition().getX(),iceberg.getPosition().getY(), pawn.getPosition().getX(), pawn.getPosition().getY());
+                int tmp = computeDistance(iceberg.getX(), iceberg.getY(), boat.getX(), boat.getY());
 
-                if (tmp < distMin) {
+                if (tmp < distMin)
                     distMin = tmp;
-                }
             }
         }
 
@@ -349,7 +337,6 @@ public class Iceboard {
 
     /**
      * Calcule la distance entre deux cases du plateau
-     * TODO: Use Position (copy constructor)
      *
      * @param x1
      * @param y1
@@ -361,25 +348,25 @@ public class Iceboard {
         int diagXTran = 0;
         int diagYTran = 0;
         int distance = 0;
-        if(x1 < x2){diagXTran = 1;}
-        else if (x1 > x2){diagXTran = -1;}
-        else{diagXTran = 0;}
+        if (x1 < x2) { diagXTran = 1; }
+        else if (x1 > x2) { diagXTran = -1; }
+        else { diagXTran = 0; }
 
-        if(y1 < y2){diagYTran = 1;}
-        else if (y1 > y2){diagYTran = -1;}
-        else{diagYTran = 0;}
+        if (y1 < y2) { diagYTran = 1; }
+        else if (y1 > y2) { diagYTran = -1; }
+        else { diagYTran = 0; }
 
         boolean isDiag = diagXTran != 0 && diagYTran != 0;
 
-        while(isDiag){
-            x1+=diagXTran;
-            y1+=diagYTran;
+        while (isDiag){
+            x1 += diagXTran;
+            y1 += diagYTran;
             isDiag = x1 != x2 && y1 != y2;
             distance++;
         }
 
-        distance += Math.abs(x2-x1);
-        distance += Math.abs(y2-y1);
+        distance += Math.abs(x2 - x1);
+        distance += Math.abs(y2 - y1);
 
         return distance;
     }
@@ -394,28 +381,28 @@ public class Iceboard {
         Set<String> moves = new HashSet<>();
 
         // Cases correspondant au joueur du rôle donné
-        ArrayList<Cell> playerPawns = new ArrayList<>(role == IcebergRole.RED ? this.redPawns : this.blackPawns);
+        ArrayList<Position> playerBoats = getBoats(role);
 
-        for (var pawn : playerPawns) {
+        for (var boat : playerBoats) {
             // Breadth First Search (largeur)
-            LinkedList<SimpleImmutableEntry<Cell, Integer>> frontier = new LinkedList<>();
-            frontier.add(new SimpleImmutableEntry<>(pawn, 0));
+            LinkedList<SimpleImmutableEntry<Position, Integer>> frontier = new LinkedList<>();
+            frontier.add(new SimpleImmutableEntry<>(boat, 0));
             int maxDepth = 0;
 
             // Clé : case d'origine ; Valeur : case de destination
             Map<String, ArrayList<Entry<String, Integer>>> cameFrom = new HashMap<>();
-            cameFrom.put(pawn.getPosition().toString(), new ArrayList<>());
+            cameFrom.put(boat.toString(), new ArrayList<>());
 
-            ArrayList<Cell> nearestIcebergs = new ArrayList<>();
+            ArrayList<Position> nearestIcebergs = new ArrayList<>();
 
             while (!frontier.isEmpty()) {
-                SimpleImmutableEntry<Cell, Integer> current = frontier.removeFirst();
+                SimpleImmutableEntry<Position, Integer> current = frontier.removeFirst();
 
                 // On passe au niveau suivant
                 if (current.getValue() > maxDepth)
                     maxDepth = current.getValue();
 
-                if (current.getKey().getState() == CellState.ICEBERG) {
+                if (this.gameBoard[current.getKey().getX()][current.getKey().getY()] == CellState.ICEBERG) {
                     nearestIcebergs.add(current.getKey());
 
                     // Trouve les icebergs possibles dans la même profondeur
@@ -423,7 +410,7 @@ public class Iceboard {
                         if (node.getValue() > current.getValue())
                             break;
 
-                        if (node.getKey().getState() == CellState.ICEBERG)
+                        if (this.gameBoard[node.getKey().getX()][node.getKey().getY()] == CellState.ICEBERG)
                             nearestIcebergs.add(node.getKey());
                     }
 
@@ -431,9 +418,9 @@ public class Iceboard {
                 }
 
                 for (var next : this.getNeighbors(current.getKey())) {
-                    String currentKey = current.getKey().getPosition().toString();
+                    String currentKey = current.getKey().toString();
                     int newDepth = current.getValue() + 1;
-                    String nextKey = next.getPosition().toString();
+                    String nextKey = next.toString();
                     if (!cameFrom.containsKey(nextKey)) {
                         frontier.offer(new SimpleImmutableEntry<>(next, newDepth));
                         cameFrom.put(nextKey, new ArrayList<>(){{ add(new SimpleEntry<>(currentKey, newDepth)); }});
@@ -445,7 +432,7 @@ public class Iceboard {
 
             // Récupère les cases voisines éligibles au mouvement
             for (var iceberg : nearestIcebergs) {
-                String icebergPosition = iceberg.getPosition().toString();
+                String icebergPosition = iceberg.toString();
                 ArrayList<String> paths = new ArrayList<>();
                 paths.add(icebergPosition);
 
@@ -454,7 +441,7 @@ public class Iceboard {
                     HashSet<String> parents = new HashSet<>(){{ add(iceParent.getKey()); }};
 
                     // Déroulement des chemins les plus courts trouvés précédemment
-                    while (parents.stream().noneMatch(parent -> parent.equals(pawn.getPosition().toString()))) {
+                    while (parents.stream().noneMatch(parent -> parent.equals(boat.toString()))) {
                         paths = new ArrayList<>();
                         // Récupère les grands-parents (profondeur précédente) pour dérouler tous les chemins possibles
                         HashSet<String> grandParents = new HashSet<>();
@@ -467,7 +454,7 @@ public class Iceboard {
                         parents = grandParents;
                     }
 
-                    moves.addAll(paths.stream().map(path -> pawn.getPosition().toString() + '-' + path).collect(toList()));
+                    moves.addAll(paths.stream().map(path -> boat.toString() + '-' + path).collect(toList()));
                 }
             }
         }
@@ -482,9 +469,9 @@ public class Iceboard {
      */
     public void load(InputStream stream) {
         try {
-            this.redPawns = new ArrayList<>();
-            this.blackPawns = new ArrayList<>();
-            gameBoard = new Cell[SIZE][SIZE];
+            this.redBoats = new ArrayList<>();
+            this.blackBoats = new ArrayList<>();
+            this.gameBoard = new CellState[SIZE][SIZE];
 
             InputStreamReader isr = new InputStreamReader(stream);
             BufferedReader reader = new BufferedReader(isr);
@@ -504,14 +491,14 @@ public class Iceboard {
                     char c = line.charAt(i);
                     if (c == ' ') continue;
 
-                    Cell cell = new Cell(CellState.fromChar(c), new Position(rowNumber, index));
-                    gameBoard[rowNumber][index] = cell;
+                    CellState state = CellState.fromChar(c);
+                    gameBoard[rowNumber][index] = state;
 
                     // Sauvegarde en mémoire des tuiles des joueurs
-                    if (cell.getState() == CellState.RED)
-                        this.redPawns.add(cell);
-                    else if (cell.getState() == CellState.BLACK)
-                        this.blackPawns.add(cell);
+                    if (state == CellState.RED)
+                        this.redBoats.add(new Position(rowNumber, index));
+                    else if (state == CellState.BLACK)
+                        this.blackBoats.add(new Position(rowNumber, index));
 
                     index++;
                 }
@@ -547,7 +534,7 @@ public class Iceboard {
 
             for (int j = 0; j < gameBoard[i].length; j++) {
                 if (gameBoard[i][j] != null) {
-                    switch (gameBoard[i][j].getState()) {
+                    switch (gameBoard[i][j]) {
                         case RED:
                             toPrint.append(" R  ");
                             charCount++;
