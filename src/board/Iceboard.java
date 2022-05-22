@@ -162,6 +162,13 @@ public class Iceboard {
         gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()] = new Cell(originCell.getState(), iceMove.getDestination());
     }
 
+    /**
+     * Obtient le nouveau état du plateau après un mouvement
+     *
+     * @param move Mouvement en format "L0-L0"
+     * @param role Rôle du joueur qui joue actuellement
+     * @return Nouveau plateau
+     */
     public Iceboard emulateMove(String move, IcebergRole role){
         Iceboard newBoard = copy(this);
         newBoard.playMove(move, role);
