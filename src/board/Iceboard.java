@@ -68,9 +68,15 @@ public class Iceboard {
     private int redScore, blackScore;
 
     /**
+     * Nombre de tours de la partie
+     */
+    private int turns;
+
+    /**
      * Constructeur par défaut
      */
     public Iceboard() {
+        this.turns = 0;
         this.redScore = 0;
         this.blackScore = 0;
 
@@ -85,6 +91,7 @@ public class Iceboard {
      * @param iceboard Etat du plateau à copier
      */
     private Iceboard(Iceboard iceboard) {
+        this.turns = iceboard.turns;
         this.redScore = iceboard.redScore;
         this.blackScore = iceboard.blackScore;
 
@@ -110,6 +117,14 @@ public class Iceboard {
      */
     public CellState getCellAt(Position p) {
         return this.gameBoard[p.getX()][p.getY()];
+    }
+
+    /**
+     * Récupère le nombre de tours
+     * @return nombre de tours
+     */
+    public int getTurns(){
+        return turns;
     }
 
     /**
@@ -149,6 +164,7 @@ public class Iceboard {
 
         gameBoard[iceMove.getOrigin().getX()][iceMove.getOrigin().getY()] = CellState.EMPTY;
         gameBoard[iceMove.getDestination().getX()][iceMove.getDestination().getY()] = originCell;
+        turns++;
     }
 
     /**

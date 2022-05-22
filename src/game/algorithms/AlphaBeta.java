@@ -18,7 +18,7 @@ public class AlphaBeta {
     IHeuristic heuristic;
 
     // TODO: Don't make it constant, try several functions
-    private static final int TIME_LIMIT_MS = 480000/61;
+    private static final int TIME_LIMIT_MS = 480000;
 
     /** Interrupt search when the time limit dedicated to it is reached */
     private static boolean searchAborted = false;
@@ -74,7 +74,7 @@ public class AlphaBeta {
         for (var move : moves) {
             board.emulateMove(move, playerRole);
 
-            long computeTimeLimit = (TIME_LIMIT_MS - 1000) / (moves.size());
+            long computeTimeLimit = getTimeLimit2(board.getTurns(), moves.size());
 
             int res = computeID(board, computeTimeLimit);
 
@@ -85,6 +85,37 @@ public class AlphaBeta {
         }
 
         return bestMove;
+    }
+
+    /**
+     * Permet d'attribuer le temps de calcul
+     * Gagne contre alphabeta fourni 28/27 si RED
+     * Perds contre alphabeta fourni 26/28 si BLACK
+     * @param turns
+     * @param moves
+     * @return
+     */
+    private long getTimeLimit(int turns, int moves) {
+        if(turns < 15){return TIME_LIMIT_MS * 10 / 100 / 16 / moves;}
+        else if(turns < 30){return TIME_LIMIT_MS * 30 / 100 / 15 / moves;}
+        else if(turns < 50){return TIME_LIMIT_MS * 40 / 100 / 20 / moves;}
+        else{return TIME_LIMIT_MS * 20 / 100 / 20 / moves;}
+    }
+
+    /**
+     * Permet d'attribuer le temps de calcul
+     * Gagne contre alphabeta fourni 28/27 si RED
+     * Perds contre alphabeta fourni 26/28 si BLACK
+     * @param turns
+     * @param moves
+     * @return
+     */
+    private long getTimeLimit2(int turns, int moves) {
+        if(turns < 5){return TIME_LIMIT_MS * 10 / 100 / 5 / moves;}
+        else if(turns < 20){return TIME_LIMIT_MS * 20 / 100 / 15 / moves;}
+        else if(turns < 40){return TIME_LIMIT_MS * 25 / 100 / 10 / moves;}
+        else if(turns < 50){return TIME_LIMIT_MS * 30/ 100 / 10 / moves;}
+        else{return TIME_LIMIT_MS * 15 / 100 / 20 / moves;}
     }
 
     private int maxMin(Iceboard board, int depth, int alpha, int beta) {
