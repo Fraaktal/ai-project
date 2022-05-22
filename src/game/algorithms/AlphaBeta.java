@@ -17,8 +17,10 @@ public class AlphaBeta {
     /** L'heuristique à appliquer */
     IHeuristic heuristic;
 
+    // TODO: Don't make it constant, try several functions
     private static final int TIME_LIMIT_MS = 480000/61;
 
+    /** Interrupt search when the time limit dedicated to it is reached */
     private static boolean searchAborted = false;
 
     public AlphaBeta(IcebergRole role, IHeuristic heuristic) {
@@ -29,6 +31,7 @@ public class AlphaBeta {
 
     /**
      * Détermine le meilleur mouvement à faire selon les mouvements autorisés
+     * avec une profondeur maximale définie à l'avance
      *
      * @param board Plateau du jeu actuel
      * @param playerRole Rôle du joueur à faire gagner
@@ -54,6 +57,14 @@ public class AlphaBeta {
         return bestMove;
     }
 
+    /**
+     * Trouve le meilleur mouvement à faire parmi les mouvements possibles
+     * en utilisant l'iterative deepening
+     *
+     * @param board Plateau à un état précis
+     * @param playerRole Rôle du joueur à maximiser
+     * @return Mouvement au format "LN-LN"
+     */
     public String bestMoveID(Iceboard board, IcebergRole playerRole) {
         String bestMove = null;
         int valMax = Integer.MIN_VALUE;
@@ -61,7 +72,6 @@ public class AlphaBeta {
         var moves = board.getPossibleMoves(playerRole);
 
         for (var move : moves) {
-            // TODO: Use another object other than board itself?
             board.emulateMove(move, playerRole);
 
             long computeTimeLimit = (TIME_LIMIT_MS - 1000) / (moves.size());
@@ -160,7 +170,7 @@ public class AlphaBeta {
         long timeEnd = timeStart + timeLimit;
 
         int depth = 1;
-        int res = 0;
+        int score = 0;
 
         searchAborted = false;
 
@@ -170,17 +180,17 @@ public class AlphaBeta {
             if (timeCurrent >= timeEnd)
                 break;
 
-            int itRes = minMaxIt(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, timeCurrent, timeEnd - timeCurrent);
+            int itScore = minMaxIt(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, timeCurrent, timeEnd - timeCurrent);
 
-            if (itRes >= winRes)
-                return itRes;
+            if (itScore >= winRes)
+                return itScore;
 
             if (!searchAborted)
-                res = itRes;
+                score = itScore;
 
             depth++;
         }
 
-        return res;
+        return score;
     }
 }

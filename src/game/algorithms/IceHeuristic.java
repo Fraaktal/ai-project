@@ -19,28 +19,28 @@ public class IceHeuristic implements IHeuristic {
         retourner result.
         */
 
-        var pawns = board.getBoats(role);
+        var boats = board.getBoats(role);
         int result = 0;
-        for (var pawn:pawns) {
-            var icebergs = board.getNearestIcebergs(pawn);
+        for (var boat : boats) {
+            var icebergs = board.getNearestIcebergs(boat);
             for (var iceberg : icebergs) {
                 var heap = board.getHeap(iceberg);
-                int distanceAmi = board.computeDistance(pawn.getX(), pawn.getY(), iceberg.getX(), iceberg.getY());
-                int distanceEnnemi = board.getMinEnemyDistance(heap, role);
-                result += computeResult(heap.size(), distanceAmi, distanceEnnemi);
+                int distanceFriend = board.computeDistance(boat.getX(), boat.getY(), iceberg.getX(), iceberg.getY());
+                int distanceEnemy = board.getMinEnemyDistance(heap, role);
+                result += computeResult(heap.size(), distanceFriend, distanceEnemy);
             }
         }
         return result;
     }
 
     private int computeResult(int heap, int distanceAmi, int distanceEnnemi){
-        int amiScore = 0;
-        int ennemiScore = 0;
+        int scoreFriend = 0;
+        int scoreEnemy = 0;
         while (heap > 0){
             //on commence par ennemi (on vient de jouer)
             if (distanceEnnemi == 1){
                 heap--;
-                ennemiScore++;
+                scoreEnemy++;
             }
             else {
                 distanceEnnemi--;
@@ -49,7 +49,7 @@ public class IceHeuristic implements IHeuristic {
             if (heap>0) {
                 if (distanceAmi == 1) {
                     heap--;
-                    amiScore++;
+                    scoreFriend++;
                 }
                 else {
                     distanceAmi--;
@@ -57,6 +57,6 @@ public class IceHeuristic implements IHeuristic {
             }
         }
 
-        return amiScore - ennemiScore;
+        return scoreFriend - scoreEnemy;
     }
 }
