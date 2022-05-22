@@ -17,7 +17,6 @@ public class AlphaBeta {
     /** L'heuristique à appliquer */
     IHeuristic heuristic;
 
-    // TODO: Don't make it constant, try several functions
     private static final int TIME_LIMIT_MS = 480000;
 
     /** Interrupt search when the time limit dedicated to it is reached */
@@ -118,6 +117,14 @@ public class AlphaBeta {
         else{return TIME_LIMIT_MS * 15 / 100 / 20 / moves;}
     }
 
+    /**
+     * partie max de l'algorithme minimax
+     * @param board Plateau à un état précis
+     * @param depth Profondeur restante
+     * @param alpha Valeur courante d'alpha
+     * @param beta Valeur courante de beta
+     * @return
+     */
     private int maxMin(Iceboard board, int depth, int alpha, int beta) {
         if (depth == 0 || board.isGameOver()) {
             return this.heuristic.evaluate(board, this.playerMaxRole);
@@ -135,6 +142,14 @@ public class AlphaBeta {
         return alpha;
     }
 
+    /**
+     * partie min de l'algorithme minimax
+     * @param board Plateau à un état précis
+     * @param depth Profondeur restante
+     * @param alpha Valeur courante d'alpha
+     * @param beta Valeur courante de beta
+     * @return
+     */
     private int minMax(Iceboard board, int depth, int alpha, int beta) {
         if (depth == 0 || board.isGameOver()) {
             return this.heuristic.evaluate(board, this.playerMinRole);
@@ -152,6 +167,11 @@ public class AlphaBeta {
         return beta;
     }
 
+    /**
+     * Vérifie si le temps alloué est écoulé
+     * @param timeStart Temps de départ
+     * @param timeLimit Limite de temps
+     */
     private void checkTimeElapsed(long timeStart, long timeLimit) {
         long timeCurrent = System.currentTimeMillis();
         long timeElapsed = (timeCurrent - timeStart);
@@ -160,6 +180,16 @@ public class AlphaBeta {
             searchAborted = true;
     }
 
+    /**
+     * partie max de l'algorithme minimax avec Iterative Deepening
+     * @param board Plateau à un état précis
+     * @param depth Profondeur restante
+     * @param alpha Valeur courante d'alpha
+     * @param beta Valeur courante de beta
+     * @param timeStart Temps de départ
+     * @param timeLimit Limite de temps
+     * @return
+     */
     private int maxMinIt(Iceboard board, int depth, int alpha, int beta, long timeStart, long timeLimit) {
         checkTimeElapsed(timeStart, timeLimit);
 
@@ -178,6 +208,16 @@ public class AlphaBeta {
         return alpha;
     }
 
+    /**
+     * partie min de l'algorithme minimax avec Iterative Deepening
+     * @param board Plateau à un état précis
+     * @param depth Profondeur restante
+     * @param alpha Valeur courante d'alpha
+     * @param beta Valeur courante de beta
+     * @param timeStart Temps de départ
+     * @param timeLimit Limite de temps
+     * @return
+     */
     private int minMaxIt(Iceboard board, int depth, int alpha, int beta, long timeStart, long timeLimit) {
         checkTimeElapsed(timeStart, timeLimit);
 
@@ -196,6 +236,12 @@ public class AlphaBeta {
         return beta;
     }
 
+    /**
+     * Utilise l'Iterative Deepening pour trouver le meilleur coup
+     * @param board Plateau à un état précis
+     * @param timeLimit Limite de temps
+     * @return
+     */
     private int computeID(Iceboard board, long timeLimit) {
         long timeStart = System.currentTimeMillis();
         long timeEnd = timeStart + timeLimit;

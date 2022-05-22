@@ -6,23 +6,20 @@ import game.IcebergRole;
 public class IceHeuristic implements IHeuristic {
     public IceHeuristic() {}
 
+    /**
+     * Evalue le plateau
+     * @param board Plateau
+     * @param role Rôle du joueur actuel
+     * @return
+     */
     @Override
     public int evaluate(Iceboard board, IcebergRole role) {
-        /*
-        pour chaque pion allié :
-	    on récup les iceberg proches
-	    pour chaque iceberg :
-		nombre dans l'amas
-		distance de l'allié
-		distance de l'ennemi le plus proche
-		resultat += icebergs récup par ami - iceberg récup par ennemi
-        retourner result.
-        */
-
         var boats = board.getBoats(role);
         int result = 0;
+
         for (var boat : boats) {
             var icebergs = board.getNearestIcebergs(boat);
+
             for (var iceberg : icebergs) {
                 var heap = board.getHeap(iceberg);
                 int distanceFriend = board.computeDistance(boat.getX(), boat.getY(), iceberg.getX(), iceberg.getY());
@@ -33,6 +30,13 @@ public class IceHeuristic implements IHeuristic {
         return result;
     }
 
+    /**
+     *
+     * @param heap Nombre d'icebergs dans l'amas
+     * @param distanceAmi Distance du pion allié
+     * @param distanceEnnemi Distance du plus proche ennemi
+     * @return
+     */
     private int computeResult(int heap, int distanceAmi, int distanceEnnemi){
         int scoreFriend = 0;
         int scoreEnemy = 0;
